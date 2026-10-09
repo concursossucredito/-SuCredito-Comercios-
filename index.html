@@ -13,7 +13,11 @@
   body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
   h2{font-family:'Archivo Black','Inter',sans-serif;font-weight:400;letter-spacing:-0.01em;}
 
-  .hero-banner{display:block;width:100%;height:auto;max-height:520px;object-fit:cover;object-position:center top;}
+  .topbar{background:#fff;border-bottom:6px solid var(--yellow);padding:14px 24px;display:flex;justify-content:center;align-items:center;}
+  .topbar img{display:block;height:46px;width:auto;max-width:80%;}
+  .hero-wrap{background:var(--yellow);display:flex;justify-content:center;}
+  .hero-banner{display:block;width:100%;max-width:1000px;height:auto;}
+  @media (max-width:600px){ .topbar img{height:34px;} .topbar{padding:10px 16px;} }
 
   .controls{max-width:1080px;margin:0 auto;padding:28px 24px 6px;}
   .label{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:700;margin-bottom:12px;}
@@ -55,7 +59,8 @@
 <body>
 
 <header>
-  <img src="hero_banner.jpg" alt="Todo por ella, todo pora ella · Tarjeta Sucrédito" class="hero-banner">
+  <div class="topbar"><img src="logo.png" alt="Tarjeta Sucrédito"></div>
+  <div class="hero-wrap"><img src="hero_banner.jpg" alt="Todo por ella, todo pora ella · Tarjeta Sucrédito" class="hero-banner"></div>
   <div class="controls">
     <div class="label">Elegí tu localidad</div>
     <div class="tabs" id="tabs"></div>
