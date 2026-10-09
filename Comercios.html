@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sucrédito · Todo por ella</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--yellow:#FFEE00;--red:#E30613;--ink:#1B1A1E;--ink-soft:#4A4850;--paper:#FFFDF6;--line:rgba(27,26,30,0.12);}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h2{font-family:'Archivo Black','Inter',sans-serif;font-weight:400;letter-spacing:-0.01em;}
+
+  .hero-banner{display:block;width:100%;height:auto;max-height:520px;object-fit:cover;object-position:center top;}
+
+  .controls{max-width:1080px;margin:0 auto;padding:28px 24px 6px;}
+  .label{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:700;margin-bottom:12px;}
+  .tabs{display:flex;flex-wrap:wrap;gap:10px;}
+  .tab{appearance:none;border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:11px 18px;border-radius:12px;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;transition:transform .12s ease,background .12s ease;}
+  .tab:hover{transform:translateY(-2px);}
+  .tab.active{background:var(--yellow);border-color:var(--yellow);}
+  .tab .count{font-weight:500;opacity:.7;font-size:12.5px;margin-left:6px;}
+
+  main{max-width:1080px;margin:0 auto;padding:22px 24px 90px;}
+  .heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:10px 0 4px;}
+  .heading h2{font-size:clamp(2rem,4vw,3rem);margin:0;}
+  .heading .sub{color:var(--ink-soft);font-size:14.5px;}
+
+  .groups{display:flex;flex-direction:column;gap:22px;margin-top:24px;}
+  .group{display:flex;align-items:center;gap:22px;padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:18px;}
+  .logos{flex:1;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;min-width:0;}
+  .logo{flex:1 1 170px;max-width:260px;height:110px;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#fff;}
+  .logo img{max-width:100%;max-height:90px;object-fit:contain;display:block;}
+  .logo .fallback{font-family:'Archivo Black',sans-serif;font-size:18px;text-align:center;line-height:1.1;}
+
+  .plate{flex:0 0 150px;width:150px;background:#fff;border-radius:14px;padding:10px 6px 9px;text-align:center;
+    box-shadow:0 2px 7px rgba(0,0,0,.14);border-bottom:5px solid var(--yellow);}
+  .plate .num{display:inline-flex;align-items:center;justify-content:center;gap:2px;background:var(--red);color:#fff;
+    font-family:'Archivo Black',sans-serif;font-size:2.8rem;line-height:1;height:60px;min-width:74px;padding:0 12px;border-radius:12px 18px 12px 18px;}
+  .plate .num small{font-size:1rem;margin:0 2px;position:relative;top:-.6rem;}
+  .plate .txt{font-family:'Archivo Black',sans-serif;font-size:16px;line-height:1.02;margin-top:6px;letter-spacing:-0.02em;}
+
+  @media (max-width:700px){
+    .group{flex-direction:column;gap:14px;padding:14px;}
+    .plate{flex-basis:auto;width:160px;}
+    .logo{flex-basis:140px;height:96px;}
+  }
+  footer{background:var(--yellow);color:var(--ink);padding:26px 24px;font-size:13.5px;line-height:1.6;text-align:center;font-weight:600;}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="hero_banner.jpg" alt="Todo por ella, todo pora ella · Tarjeta Sucrédito" class="hero-banner">
+  <div class="controls">
+    <div class="label">Elegí tu localidad</div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+</header>
+
+<main>
+  <div class="heading">
+    <h2 id="title">—</h2>
+    <span class="sub" id="sub"></span>
+  </div>
+  <div class="groups" id="groups"></div>
+</main>
+
+<footer>
+  Tarjeta Sucrédito propiedad de Valle Fértil S.A, Cuit 30-68570941-0 — San Martín 836, San Miguel de Tucumán.<br>
+  *CFT (Costo Financiero Total) 0,0% — TNA (Tasa Nominal Anual) 0,0%.
+</footer>
+
+<script>
+/* Cada comercio: [archivo del logo, nombre (se usa si falta la imagen)] */
+const L = {
+  nico:["nico.png","Nico"], rossetti:["rossetti.png","Rossetti"], on_city:["on_city.png","On City"], naldo:["naldo.png","Naldo"],
+  tecno_compro:["tecno_compro.png","Tecno Compro"], riiing:["riiing.png","Riiing"],
+  marathon:["marathon.png","Marathon"], noraly:["noraly.png","Noraly"], minou:["minou.png","Minou"],
+  juanita_jo:["juanita_jo.png","Juanita Jo"], ver:["ver.png","Ver"], del_pueblo:["del_pueblo.png","Del Pueblo Farmacias"],
+  avenida:["avenida.png","Avenida"], mauri_deportes:["mauri_deportes.png","Mauri Deportes"], narcisa:["narcisa.png","Narcisa"],
+  ibanez:["ibañez.png","Ibañez"], pampero:["pampero.png","Pampero"], elegant:["elegant.png","Elegant"], urbano:["unrbano.png","Urbano"],
+  balbi:["balbi.png","Balbi"], la_marroquineria:["la_marroquineria.png","La Marroquinería"], divinas:["divinas.png","Divinas"],
+  tendencia:["tendencia.png","Tendencia"], valentino:["valentino.png","Valentino"],
+  luciri:["luciri.png","Luciri"], tabu:["tabu.png","Tabú"], reina_mora:["reina_mora.png","Reina Mora"], gravedad_zero:["gravedad_zero.png","Gravedad Zero"],
+  yandi_deportes:["yandi_deportes.png","Yandi Deportes"], stile_kapirosa:["stile_kapirosa.png","Stile Kapirosa"],
+  ambar:["ambar.png","Ámbar"], euforia:["euforia.png","Euforia"], que_bonito:["que_bonito.png","Qué Bonito"], zenihe:["zenihe.png","Zenihe"],
+  terravisione:["terravisione.png","Terravisione"],
+  optica_nanni:["optica_nanni.png","Óptica Nanni"], piruchas:["piruchas.png","Piruchas"], lucho:["lucho.png","Lucho"],
+  sc_deportes:["sc_deportes.png","SC Deportes"], horizonte:["horizonte.png","Horizonte"], lyh_deportes:["lyh_deportes.png","LyH Deportes"],
+  silvana_joyas:["silvana_joyas.png","Silvana Joyas"], optica_santa_lucia:["optica_santa_lucia.png","Óptica Santa Lucía"],
+  bonafide:["bonafide.png","Bonafide"], kiss_gift_shop:["kiss_gift_shop.png","Kiss Gift Shop"],
+  laura_valentinuz_joyas:["laura_valentinuz_joyas.png","Laura Valentinuz Joyas"],
+  joyeria_hama:["joyeria_hama.png","Joyería Hama"], deolinda:["deolinda.png","Deolinda"], venivestite:["venivestite.png","Venivestite"],
+  milenium:["milenium.png","Milenium"], monticelli:["monticelli.png","Monticelli"]
+};
+
+/* Localidades → grupos [cuotas, [comercios]] */
+const DATA = {
+  COR:  {name:"Córdoba", groups:[["3 y 6",["nico","rossetti"]],["6 y 9",["on_city","naldo"]],["6",["tecno_compro","riiing"]]]},
+  TUC:  {name:"Tucumán", groups:[["5",["marathon"]],["6",["noraly","minou"]],["8",["juanita_jo"]],["5 y 8",["ver"]],["6 y 9",["del_pueblo"]]]},
+  ORAN: {name:"Orán", groups:[["3",["avenida","mauri_deportes","narcisa"]],["5",["ibanez","pampero","elegant","urbano"]]]},
+  SAL:  {name:"Salta", groups:[["5",["marathon","balbi","la_marroquineria","divinas"]],["6",["tendencia","valentino"]]]},
+  SANP: {name:"San Pedro", groups:[["3",["luciri","tabu","reina_mora","gravedad_zero"]],["5",["yandi_deportes"]],["3 y 6",["stile_kapirosa"]]]},
+  CONC: {name:"Concepción", groups:[["5",["marathon","ambar","euforia"]],["6",["que_bonito","zenihe"]],["5 y 7",["terravisione"]]]},
+  BANDA:{name:"La Banda", groups:[["3",["optica_nanni","piruchas"]],["6",["lucho","sc_deportes","horizonte","lyh_deportes"]]]},
+  JUJ:  {name:"Jujuy", groups:[["3",["silvana_joyas","optica_santa_lucia","bonafide","balbi"]],["6",["kiss_gift_shop"]],["3 y 6",["laura_valentinuz_joyas"]]]},
+  SGO:  {name:"Santiago", groups:[["12",["joyeria_hama"]],["9",["deolinda"]],["6",["venivestite","milenium","monticelli"]]]}
+};
+
+const $ = id => document.getElementById(id);
+const count = loc => loc.groups.reduce((n,g) => n + g[1].length, 0);
+
+function plateHtml(c){
+  const num = c.split(" y ").join("<small>y</small>");
+  return `<div class="plate"><div class="num">${num}</div><div class="txt">Cuotas<br>sin interés</div></div>`;
+}
+function logoHtml(k){
+  const [file,name] = L[k];
+  return `<span class="logo"><img src="${file}" alt="${name}" data-name="${name}" onerror="logoFail(this)"></span>`;
+}
+function logoFail(img){
+  const d = document.createElement('div');
+  d.className = 'fallback'; d.textContent = img.dataset.name;
+  img.replaceWith(d);
+}
+
+function render(key){
+  const loc = DATA[key], n = count(loc);
+  $('title').textContent = loc.name;
+  $('sub').textContent = n + (n === 1 ? " comercio adherido" : " comercios adheridos");
+  $('groups').innerHTML = loc.groups.map(g =>
+    `<div class="group">${plateHtml(g[0])}<div class="logos">${g[1].map(logoHtml).join('')}</div></div>`).join('');
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.key === key));
+  history.replaceState(null,'','#'+key.toLowerCase());
+}
+
+Object.keys(DATA).forEach(key => {
+  const b = document.createElement('button');
+  b.className = 'tab'; b.dataset.key = key;
+  b.innerHTML = DATA[key].name + ` <span class="count">${count(DATA[key])}</span>`;
+  b.onclick = () => render(key);
+  $('tabs').appendChild(b);
+});
+const h = location.hash.replace('#','').toUpperCase();
+render(DATA[h] ? h : 'TUC');
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e4bff5fb0b1c42b996c14cf19bf481b9"}'></script>
+<!-- End Cloudflare Web Analytics -->
+</body>
+</html>
