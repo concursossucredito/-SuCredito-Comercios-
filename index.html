@@ -80,7 +80,7 @@
   .section-switch{
     display:flex;gap:0;margin-bottom:22px;
     border:2px solid var(--ink);border-radius:14px;overflow:hidden;
-    max-width:420px;
+    max-width:560px;
   }
   .section-btn{
     flex:1;appearance:none;border:none;
@@ -212,6 +212,7 @@
   <div class="section-switch" role="tablist" aria-label="Sección">
     <button class="section-btn active" data-section="tecno" role="tab" aria-selected="true">Tecno</button>
     <button class="section-btn" data-section="indumentaria" role="tab" aria-selected="false">Indumentaria</button>
+    <button class="section-btn" data-section="farmacia" role="tab" aria-selected="false">Farmacia / Perfumería</button>
   </div>
 
   <div class="label">Elegí tu localidad</div>
@@ -258,15 +259,31 @@ const L = {
 
   /* Tecno (nuevos) */
   amo_las_malvinas:["amo_las_malvinas.png","Amo las Malvinas"],
-  maxihogar:["maxi_hogar.png","Maxihogar"],
-  oncity:["on_city.png","On City"],
+  maxihogar:["maxihogar.png","Maxihogar"],
+  oncity:["oncity.png","On City"],
   castillo:["castillo.png","Castillo"],
   oscar_barbieri:["oscar_barbieri.png","Oscar Barbieri"],
   graneros:["graneros.png","Graneros"],
   tevelin:["tevelin.png","Tevelin"],
   el_gato:["el_gato.png","El Gato"],
   armonia_hogar:["armonia_hogar.png","Armonía Hogar"],
-  mobilar:["mobilar.png","Mobilar"]
+  mobilar:["mobilar.png","Mobilar"],
+
+  /* Indumentaria nuevos */
+  la_vaqueria:["la_vaqueria.png","La Vaquería"],
+  balbi_home:["balbi_home.png","Balbi Home"],
+  sofi_deportes:["sofi_deportes.png","Sofi Deportes"],
+  sikuris:["sikuris.png","Sikuris"],
+  fresiass:["fresiass.png","Fresiass"],
+  nikita:["nikita.png","Nikita"],
+  andalucia:["andalucia.png","Andalucía"],
+  kafers:["kafers.png","Kafers"],
+  ave_fenix:["ave_fenix.png","Ave Fénix"],
+  mc_center:["mc_center.png","MC Center"],
+  bolton:["bolton.png","Bolton"],
+  kinetic:["kinetic.png","Kinetic"],
+  cocoreta:["cocoreta.png","Cocoreta"],
+  genes:["genes.png","Genes"]
 };
 
 /* ========== DATA ========== */
@@ -282,6 +299,8 @@ const DATA = {
       ["6 y 9", ["on_city","naldo"]],
       ["6", ["tecno_compro","riiing"]]
     ]
+  ,
+    farmacia: []
   },
   TUC: {
     name: "Tucumán",
@@ -292,12 +311,14 @@ const DATA = {
       ["6", ["castillo"]]
     ],
     indumentaria: [
-      ["5", ["marathon"]],
+      ["5", ["marathon","genes"]],
       ["6", ["noraly","minou"]],
-      ["8", ["juanita_jo"]],
-      ["5 y 8", ["ver"]],
+      ["8", ["bolton","kinetic"]],
+      ["5 y 8", ["ver","juanita_jo","cocoreta"]],
       ["6 y 9", ["del_pueblo"]]
     ]
+  ,
+    farmacia: []
   },
   ORAN: {
     name: "Orán",
@@ -309,6 +330,8 @@ const DATA = {
       ["3", ["avenida","mauri_deportes","narcisa"]],
       ["5", ["ibanez","pampero","elegant","urbano"]]
     ]
+  ,
+    farmacia: []
   },
   SAL: {
     name: "Salta",
@@ -318,9 +341,12 @@ const DATA = {
       ["6", ["castillo"]]
     ],
     indumentaria: [
-      ["5", ["marathon","balbi","la_marroquineria","divinas"]],
+      ["3", ["sikuris"]],
+      ["5", ["marathon","balbi","la_marroquineria","divinas","balbi_home","sofi_deportes"]],
       ["6", ["tendencia","valentino"]]
     ]
+  ,
+    farmacia: []
   },
   SANP: {
     name: "San Pedro",
@@ -330,10 +356,13 @@ const DATA = {
       ["6", ["castillo"]]
     ],
     indumentaria: [
-      ["3", ["luciri","tabu","reina_mora","gravedad_zero"]],
-      ["5", ["yandi_deportes"]],
+      ["3", ["tabu","gravedad_zero"]],
+      ["5", ["yandi_deportes","marathon"]],
+      ["6", ["la_vaqueria","reina_mora"]],
       ["3 y 6", ["stile_kapirosa"]]
     ]
+  ,
+    farmacia: []
   },
   CONC: {
     name: "Concepción",
@@ -344,10 +373,13 @@ const DATA = {
       ["6", ["castillo"]]
     ],
     indumentaria: [
-      ["5", ["marathon","ambar","euforia"]],
-      ["6", ["que_bonito","zenihe"]],
-      ["5 y 7", ["terravisione"]]
+      ["5", ["marathon","ambar","euforia","nikita","andalucia"]],
+      ["6", ["que_bonito","zenihe","fresiass"]],
+      ["5 y 7", ["terravisione"]],
+      ["5 y 8", ["ver"]]
     ]
+  ,
+    farmacia: []
   },
   BANDA: {
     name: "La Banda",
@@ -359,9 +391,13 @@ const DATA = {
       ["6", ["castillo"]]
     ],
     indumentaria: [
-      ["3", ["optica_nanni","piruchas"]],
-      ["6", ["lucho","sc_deportes","horizonte","lyh_deportes"]]
+      ["3", ["optica_nanni","piruchas","marathon","ave_fenix","mc_center"]],
+      ["5", ["balbi"]],
+      ["5 y 8", ["ver"]],
+      ["6", ["lucho","sc_deportes","horizonte","lyh_deportes","kafers"]]
     ]
+  ,
+    farmacia: []
   },
   JUJ: {
     name: "Jujuy",
@@ -375,6 +411,8 @@ const DATA = {
       ["6", ["kiss_gift_shop"]],
       ["3 y 6", ["laura_valentinuz_joyas"]]
     ]
+  ,
+    farmacia: []
   },
   SGO: {
     name: "Santiago",
@@ -389,13 +427,15 @@ const DATA = {
       ["12", ["joyeria_hama"]],
       ["9", ["deolinda"]],
       ["6", ["venivestite","milenium","monticelli"]]
-    ]
+    ],
+    farmacia: []
   }
 };
 
 const SECTION_LABELS = {
   tecno: "Tecno",
-  indumentaria: "Indumentaria"
+  indumentaria: "Indumentaria",
+  farmacia: "Farmacia / Perfumería"
 };
 
 let currentSection = "tecno";
@@ -503,7 +543,7 @@ if(hash){
   const locKey = parts[0] ? parts[0].toUpperCase() : '';
   const sec = parts[1] || 'tecno';
   if(DATA[locKey]) currentLoc = locKey;
-  if(sec === 'tecno' || sec === 'indumentaria') currentSection = sec;
+  if(sec === 'tecno' || sec === 'indumentaria' || sec === 'farmacia') currentSection = sec;
 }
 render();
 
