@@ -283,7 +283,18 @@ const L = {
   bolton:["bolton.png","Bolton"],
   kinetic:["kinetic.png","Kinetic"],
   cocoreta:["cocoreta.png","Cocoreta"],
-  genes:["genes.png","Genes"]
+  genes:["genes.png","Genes"],
+
+  /* Farmacia / Perfumería */
+  alvarado:["alvarado.png","Farmacia Alvarado"],
+  plazoleta:["plazoleta.png","Plazoleta"],
+  sudamericana:["sudamericana.png","Sudamericana"],
+  san_francisco:["san_francisco.png","San Francisco"],
+  farmacity:["farmacity.png","Farmacity"],
+  farmar:["farmar.png","Farmar"],
+  la_plaza:["la_plaza.png","La Plaza"],
+  la_esquina:["la_esquina.png","La Esquina"],
+  hero:["hero.png","Hero"]
 };
 
 /* ========== DATA ========== */
@@ -298,9 +309,10 @@ const DATA = {
       ["3 y 6", ["nico","rossetti"]],
       ["6 y 9", ["on_city","naldo"]],
       ["6", ["tecno_compro","riiing"]]
+    ],
+    farmacia: [
+      ["3", ["farmacity","farmar"]]
     ]
-  ,
-    farmacia: []
   },
   TUC: {
     name: "Tucumán",
@@ -316,9 +328,12 @@ const DATA = {
       ["8", ["bolton","kinetic"]],
       ["5 y 8", ["ver","juanita_jo","cocoreta"]],
       ["6 y 9", ["del_pueblo"]]
+    ],
+    farmacia: [
+      ["3", ["farmar"]],
+      ["3 y 5", ["plazoleta"]],
+      ["3 y 6 y 9", ["del_pueblo"]]
     ]
-  ,
-    farmacia: []
   },
   ORAN: {
     name: "Orán",
@@ -329,9 +344,10 @@ const DATA = {
     indumentaria: [
       ["3", ["avenida","mauri_deportes","narcisa"]],
       ["5", ["ibanez","pampero","elegant","urbano"]]
+    ],
+    farmacia: [
+      ["3 y 6", ["alvarado"]]
     ]
-  ,
-    farmacia: []
   },
   SAL: {
     name: "Salta",
@@ -344,9 +360,10 @@ const DATA = {
       ["3", ["sikuris"]],
       ["5", ["marathon","balbi","la_marroquineria","divinas","balbi_home","sofi_deportes"]],
       ["6", ["tendencia","valentino"]]
+    ],
+    farmacia: [
+      ["3", ["farmacity","farmar","sudamericana"]]
     ]
-  ,
-    farmacia: []
   },
   SANP: {
     name: "San Pedro",
@@ -360,9 +377,10 @@ const DATA = {
       ["5", ["yandi_deportes","marathon"]],
       ["6", ["la_vaqueria","reina_mora"]],
       ["3 y 6", ["stile_kapirosa"]]
+    ],
+    farmacia: [
+      ["3", ["farmar"]]
     ]
-  ,
-    farmacia: []
   },
   CONC: {
     name: "Concepción",
@@ -377,8 +395,7 @@ const DATA = {
       ["6", ["que_bonito","zenihe","fresiass"]],
       ["5 y 7", ["terravisione"]],
       ["5 y 8", ["ver"]]
-    ]
-  ,
+    ],
     farmacia: []
   },
   BANDA: {
@@ -395,8 +412,7 @@ const DATA = {
       ["5", ["balbi"]],
       ["5 y 8", ["ver"]],
       ["6", ["lucho","sc_deportes","horizonte","lyh_deportes","kafers"]]
-    ]
-  ,
+    ],
     farmacia: []
   },
   JUJ: {
@@ -410,9 +426,10 @@ const DATA = {
       ["3", ["silvana_joyas","optica_santa_lucia","bonafide","balbi"]],
       ["6", ["kiss_gift_shop"]],
       ["3 y 6", ["laura_valentinuz_joyas"]]
+    ],
+    farmacia: [
+      ["3", ["san_francisco","farmacity","farmar"]]
     ]
-  ,
-    farmacia: []
   },
   SGO: {
     name: "Santiago",
@@ -428,7 +445,10 @@ const DATA = {
       ["9", ["deolinda"]],
       ["6", ["venivestite","milenium","monticelli"]]
     ],
-    farmacia: []
+    farmacia: [
+      ["3 y 6", ["la_esquina"]],
+      ["3", ["la_plaza","farmar","farmacity"]]
+    ]
   }
 };
 
@@ -466,6 +486,12 @@ function logoFail(img){
 }
 
 function render(){
+  // Si la localidad actual no tiene comercios en esta sección, ir a la primera que sí tenga
+  if(countGroups(DATA[currentLoc][currentSection] || []) === 0){
+    const first = Object.keys(DATA).find(k => countGroups(DATA[k][currentSection] || []) > 0);
+    if(first) currentLoc = first;
+  }
+
   const loc = DATA[currentLoc];
   if(!loc) return;
 
@@ -500,14 +526,23 @@ function render(){
     groupsEl.classList.add('fade-in');
   }, 140);
 
+  // Tabs: ocultar localidades con 0 en la sección actual
   document.querySelectorAll('.tab').forEach(b => {
     const key = b.dataset.key;
-    const active = key === currentLoc;
-    b.classList.toggle('active', active);
-    b.setAttribute('aria-selected', active);
     const cnt = countGroups(DATA[key][currentSection] || []);
     const countSpan = b.querySelector('.count');
     if(countSpan) countSpan.textContent = cnt;
+
+    if(cnt === 0){
+      b.style.display = 'none';
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    } else {
+      b.style.display = '';
+      const active = key === currentLoc;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active);
+    }
   });
 
   document.querySelectorAll('.section-btn').forEach(b => {
