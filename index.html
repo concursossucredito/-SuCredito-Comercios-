@@ -15,7 +15,7 @@
     --ink-soft:#4A4850;
     --paper:#FFFDF6;
     --line:rgba(27,26,30,0.12);
-    --header-h: 280px; /* se actualiza por JS */
+    --topbar-h: 70px;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -25,75 +25,76 @@
     background:var(--paper);
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
-    padding-top: var(--header-h); /* espacio para el header fijo */
   }
   h2{font-family:'Archivo Black','Inter',sans-serif;font-weight:400;letter-spacing:-0.01em;}
 
-  /* —— Intro fondo amarillo —— */
+  /* —— Fondo amarillo de entrada —— */
   .intro-fondo{
-    position:fixed;inset:0;z-index:1001;
+    position:fixed;
+    inset:0;
+    z-index:90;
     background:var(--yellow);
     pointer-events:none;
-    animation:salidaFondo 1.5s ease forwards;
+    animation:salidaFondo 1.6s ease forwards;
   }
   @keyframes salidaFondo{
-    0%,50%{opacity:1;}
-    100%{opacity:0;visibility:hidden;}
+    0%, 55%{ opacity:1; }
+    100%{ opacity:0; visibility:hidden; }
   }
 
-  /* —— HEADER FIJO (logo + banner) – nunca desaparece —— */
-  .fixed-header{
+  /* —— TOPBAR FIJO (solo el logo) – siempre visible —— */
+  .topbar{
     position:fixed;
     top:0;
     left:0;
     right:0;
     z-index:100;
     background:#fff;
-  }
-  .topbar{
-    background:#fff;
     border-bottom:6px solid var(--yellow);
     padding:12px 24px;
     display:flex;
     justify-content:center;
     align-items:center;
+    min-height:var(--topbar-h);
   }
   .topbar img{
-    position:relative;
-    z-index:1002;
     display:block;
     height:46px;
     width:auto;
     max-width:80%;
     transform-origin:center center;
-    animation:logoDesdeCentro 1.5s cubic-bezier(.2,.8,.25,1) both;
-    will-change:transform,opacity;
+    /* Aparece grande en el centro → se acomoda en el topbar */
+    animation:logoDesdeCentro 1.6s cubic-bezier(.22,.8,.28,1) both;
+    will-change:transform, opacity;
   }
   @keyframes logoDesdeCentro{
     0%{
-      opacity:0;
-      transform:translateY(42vh) scale(2.4);
-    }
-    12%{opacity:1;}
-    55%{
       opacity:1;
-      transform:translateY(0) scale(1.06);
+      transform: translateY(38vh) scale(2.35);
     }
-    75%{transform:translateY(0) scale(.97);}
+    50%{
+      opacity:1;
+      transform: translateY(0) scale(1.08);
+    }
+    72%{
+      transform: translateY(0) scale(0.96);
+    }
     100%{
       opacity:1;
-      transform:translateY(0) scale(1);
+      transform: translateY(0) scale(1);
     }
   }
-  @media (prefers-reduced-motion:reduce){
-    .topbar img{animation:none;opacity:1;transform:none;will-change:auto;}
-    .intro-fondo{display:none;}
+  @media (prefers-reduced-motion: reduce){
+    .topbar img{ animation:none; opacity:1; transform:none; will-change:auto; }
+    .intro-fondo{ display:none; }
   }
 
+  /* —— Hero: scrollea normal y se oculta —— */
   .hero-wrap{
     background:var(--yellow);
     display:flex;
     justify-content:center;
+    margin-top: var(--topbar-h);
   }
   .hero-banner{
     display:block;
@@ -107,7 +108,6 @@
     max-width:1080px;
     margin:0 auto;
     padding:22px 24px 6px;
-    background:var(--paper);
   }
   .label{
     font-size:13px;
@@ -276,17 +276,18 @@
     letter-spacing:-0.02em;
   }
 
-  /* —— Mobile: más compacto para que se vean 2 promociones —— */
+  /* —— Mobile: más compacto (se ven 2 promociones) —— */
   @media (max-width:700px){
-    .topbar{padding:8px 16px;}
-    .topbar img{height:34px;}
+    :root{ --topbar-h: 56px; }
+    .topbar{ padding:8px 16px; }
+    .topbar img{ height:34px; }
 
-    .controls{padding:16px 16px 4px;}
-    .tab{padding:9px 14px;font-size:13.5px;}
+    .controls{ padding:16px 16px 4px; }
+    .tab{ padding:9px 14px; font-size:13.5px; }
 
-    main{padding:12px 16px 70px;}
-    .heading h2{font-size:1.7rem;}
-    .groups{gap:12px;margin-top:12px;}
+    main{ padding:12px 16px 70px; }
+    .heading h2{ font-size:1.7rem; }
+    .groups{ gap:12px; margin-top:12px; }
 
     .group{
       flex-direction:column;
@@ -297,15 +298,15 @@
       flex-basis:auto;
       width:130px;
     }
-    .plate .num{font-size:2.2rem;height:48px;min-width:60px;}
-    .plate .txt{font-size:13px;}
+    .plate .num{ font-size:2.2rem; height:48px; min-width:60px; }
+    .plate .txt{ font-size:13px; }
 
     .logo{
       flex-basis:120px;
       height:78px;
       padding:6px 10px;
     }
-    .logo img{max-height:64px;}
+    .logo img{ max-height:64px; }
   }
 
   footer{
@@ -318,22 +319,22 @@
     font-weight:600;
   }
 
-  .groups.fade-out{opacity:0;transform:translateY(6px);transition:opacity .15s ease, transform .15s ease;}
-  .groups.fade-in{opacity:1;transform:translateY(0);transition:opacity .22s ease, transform .22s ease;}
+  .groups.fade-out{ opacity:0; transform:translateY(6px); transition:opacity .15s ease, transform .15s ease; }
+  .groups.fade-in{ opacity:1; transform:translateY(0); transition:opacity .22s ease, transform .22s ease; }
 </style>
 </head>
 <body>
 <div class="intro-fondo" aria-hidden="true"></div>
 
-<!-- HEADER FIJO: logo + banner – siempre visible -->
-<header class="fixed-header" id="fixedHeader">
-  <div class="topbar">
-    <img src="logo.png" alt="Tarjeta Sucrédito" id="logo">
-  </div>
-  <div class="hero-wrap">
-    <img src="hero_banner.jpg" alt="Todo por ella · Tarjeta Sucrédito" class="hero-banner" id="heroBanner">
-  </div>
+<!-- Solo el logo queda FIJO arriba -->
+<header class="topbar" id="topbar">
+  <img src="logo.png" alt="Tarjeta Sucrédito" id="logo">
 </header>
+
+<!-- Hero: se oculta al scrollear -->
+<div class="hero-wrap">
+  <img src="hero_banner.jpg" alt="Todo por ella · Tarjeta Sucrédito" class="hero-banner" id="heroBanner">
+</div>
 
 <div class="controls">
   <div class="label">Elegí tu localidad</div>
@@ -445,35 +446,24 @@ Object.keys(DATA).forEach(key => {
 const h = location.hash.replace('#','').toUpperCase();
 render(DATA[h] ? h : 'TUC');
 
-/* —— Ajuste dinámico de la altura del header fijo —— */
-function updateHeaderHeight(){
-  const header = document.getElementById('fixedHeader');
-  if(!header) return;
-  const h = header.offsetHeight;
-  document.documentElement.style.setProperty('--header-h', h + 'px');
+/* Ajuste de altura del topbar fijo */
+function updateTopbarHeight(){
+  const topbar = document.getElementById('topbar');
+  if(!topbar) return;
+  document.documentElement.style.setProperty('--topbar-h', topbar.offsetHeight + 'px');
 }
-
 const logo = document.getElementById('logo');
-const banner = document.getElementById('heroBanner');
-
-function onImagesReady(){
-  updateHeaderHeight();
-}
 if(logo){
-  if(logo.complete) onImagesReady();
-  else logo.addEventListener('load', onImagesReady);
-  logo.addEventListener('error', onImagesReady);
+  if(logo.complete) updateTopbarHeight();
+  else {
+    logo.addEventListener('load', updateTopbarHeight);
+    logo.addEventListener('error', updateTopbarHeight);
+  }
 }
-if(banner){
-  if(banner.complete) onImagesReady();
-  else banner.addEventListener('load', onImagesReady);
-  banner.addEventListener('error', onImagesReady);
-}
-window.addEventListener('resize', updateHeaderHeight);
-window.addEventListener('load', updateHeaderHeight);
-// fallback por si las imágenes tardan
-setTimeout(updateHeaderHeight, 300);
-setTimeout(updateHeaderHeight, 1000);
+window.addEventListener('resize', updateTopbarHeight);
+window.addEventListener('load', updateTopbarHeight);
+setTimeout(updateTopbarHeight, 200);
+setTimeout(updateTopbarHeight, 800);
 </script>
 
 <!-- Cloudflare Web Analytics -->
