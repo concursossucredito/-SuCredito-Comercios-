@@ -1,5 +1,5 @@
 -- Migración de comercios desde el HTML existente.
--- Ejecutar las partes 1 a 6 en orden después del esquema inicial de comercios.
+-- Ejecutar las partes 1 a 8 en orden después del esquema inicial de comercios.
 -- La parte 1 prepara también las cuotas por localidad.
 insert into public.comercios_categorias(nombre,slug,orden,activo) values ('Tecno','tecno',0,true) on conflict (slug) do update set nombre=excluded.nombre,activo=true;
 insert into public.comercios_categorias(nombre,slug,orden,activo) values ('Indumentaria','indumentaria',1,true) on conflict (slug) do update set nombre=excluded.nombre,activo=true;
