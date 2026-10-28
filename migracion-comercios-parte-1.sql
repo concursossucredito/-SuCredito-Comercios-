@@ -1,5 +1,5 @@
--- Migración de comercios desde el HTML existente.
--- Ejecutar las partes 1 a 8 en orden después del esquema inicial de comercios.
+-- Migración de comercios desde el HTML original.
+-- Ejecutar partes 1 a 8 en orden. La parte 1 prepara las cuotas por localidad.
 alter table public.comercios_cuotas add column if not exists localidad text not null default '';
 alter table public.comercios_cuotas drop constraint if exists comercios_cuotas_comercio_id_cantidad_etiqueta_key;
 create unique index if not exists comercios_cuotas_unique_localidad_idx on public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad);
