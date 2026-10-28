@@ -5,7 +5,7 @@ alter table public.comercios_cuotas drop constraint if exists comercios_cuotas_c
 create unique index if not exists comercios_cuotas_unique_localidad_idx on public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad);
 insert into public.comercios_categorias(nombre,slug,orden,activo) values ('Tecno','tecno',0,true) on conflict (slug) do update set nombre=excluded.nombre,activo=true;
 insert into public.comercios_categorias(nombre,slug,orden,activo) values ('Indumentaria','indumentaria',1,true) on conflict (slug) do update set nombre=excluded.nombre,activo=true;
-insert into public.comercios_categorias(nombre,slug,orden,activo) values ('Farmacia / Perfumería','farmacia',2,true) on conflict (slug) do update set nombre=excluded.nombre,activo=true;
+insert into public.comercios_categorias(nombre,slug,orden,activo) values ('Farmacia','farmacia',2,true) on conflict (slug) do update set nombre=excluded.nombre,activo=true;
 
 insert into public.comercios(nombre,slug,categoria_id,logo_url,localidades,activo,orden) select 'On City','oncity',c.id,'https://concursossucredito.github.io/-SuCredito-Comercios-/on_city.png',array['Córdoba','Tucumán','Orán','Salta','San Pedro','Concepción','La Banda','Jujuy','Santiago'],true,0 from public.comercios_categorias c where c.slug='tecno' on conflict (slug) do update set nombre=excluded.nombre,categoria_id=excluded.categoria_id,logo_url=excluded.logo_url,localidades=excluded.localidades,activo=true;
 insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,9,'9 cuotas sin interés','Córdoba',true,9 from public.comercios where slug='oncity' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
