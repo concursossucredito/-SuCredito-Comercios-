@@ -1,7 +1,5 @@
 -- Migración de comercios desde el HTML existente.
--- Ejecutar las partes 1 a 6 en orden después del esquema inicial de comercios.
--- La parte 1 prepara también las cuotas por localidad.
--- Preparación para conservar cuotas específicas por localidad.
+-- Ejecutar las partes 1 a 8 en orden después del esquema inicial de comercios.
 alter table public.comercios_cuotas add column if not exists localidad text not null default '';
 alter table public.comercios_cuotas drop constraint if exists comercios_cuotas_comercio_id_cantidad_etiqueta_key;
 create unique index if not exists comercios_cuotas_unique_localidad_idx on public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad);
@@ -27,3 +25,10 @@ insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,acti
 insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','La Banda',true,8 from public.comercios where slug='tecno-compro' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
 insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','Jujuy',true,8 from public.comercios where slug='tecno-compro' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
 insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','Santiago',true,8 from public.comercios where slug='tecno-compro' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
+insert into public.comercios(nombre,slug,categoria_id,logo_url,localidades,activo,orden) select 'Naldo','naldo',c.id,'https://concursossucredito.github.io/-SuCredito-Comercios-/naldo.png',array['Córdoba','Salta','San Pedro','La Banda','Jujuy','Santiago'],true,0 from public.comercios_categorias c where c.slug='tecno' on conflict (slug) do update set nombre=excluded.nombre,categoria_id=excluded.categoria_id,logo_url=excluded.logo_url,localidades=excluded.localidades,activo=true;
+insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','Córdoba',true,8 from public.comercios where slug='naldo' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
+insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','Salta',true,8 from public.comercios where slug='naldo' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
+insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','San Pedro',true,8 from public.comercios where slug='naldo' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
+insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','La Banda',true,8 from public.comercios where slug='naldo' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
+insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','Jujuy',true,8 from public.comercios where slug='naldo' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
+insert into public.comercios_cuotas(comercio_id,cantidad,etiqueta,localidad,activa,orden) select id,8,'8 cuotas sin interés','Santiago',true,8 from public.comercios where slug='naldo' on conflict (comercio_id,cantidad,etiqueta,localidad) do update set activa=true;
