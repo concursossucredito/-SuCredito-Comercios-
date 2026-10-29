@@ -4,3 +4,6 @@
 input[type=file]{font-size:12px;padding:9px;background:#fffdf6}.hint{display:block;font-size:11px;color:#65616a;font-weight:400;line-height:1.4}
 
 .categoryIntro{max-width:850px;line-height:1.6;margin:-6px 0 18px}.categoryActions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}.categoryActions button{font-size:11px;padding:8px}.categoryActions .danger{color:var(--r);border-color:#f0c5c5}.categoryActions button:disabled{opacity:.35;cursor:not-allowed}.previewTools{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fffdf6;display:grid;gap:12px}.previewTitle{font-weight:900;font-size:13px}.previewFrame{min-height:120px;background:#f0eee8;border:1px dashed #c8c2b5;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}.previewFrame img{display:block;max-width:100%;max-height:260px;object-fit:contain}.previewTools output{float:right;color:var(--r);font-weight:900}.previewTools input[type=range]{padding:0}.webForm .previewTools label{display:block}.webForm .previewTools input,.webForm .previewTools select{margin-top:7px}
+
+/* clearer upload feedback and mobile category controls */
+@media(max-width:520px){.previewFrame{min-height:100px}.previewFrame img{max-height:220px}.categoryActions{justify-content:flex-start}.categoryActions button{padding:7px;font-size:10px}}
