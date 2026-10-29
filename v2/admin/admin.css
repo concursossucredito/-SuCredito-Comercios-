@@ -7,3 +7,5 @@ input[type=file]{font-size:12px;padding:9px;background:#fffdf6}.hint{display:blo
 
 /* clearer upload feedback and mobile category controls */
 @media(max-width:520px){.previewFrame{min-height:100px}.previewFrame img{max-height:220px}.categoryActions{justify-content:flex-start}.categoryActions button{padding:7px;font-size:10px}}
+
+#removeHero{margin-top:8px;border:1px solid #e30613;background:#fff;color:#e30613;border-radius:9px;padding:10px 12px;font-weight:800;cursor:pointer}#removeHero:hover{background:#fff0f0}
