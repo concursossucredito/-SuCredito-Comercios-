@@ -1,0 +1,51 @@
+:root{--y:#FFEE00;--r:#E30613;--ink:#1B1A1E;--muted:#65616a;--paper:#FFFDF6;--line:#e8e4d9}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Arial,sans-serif}header{height:68px;background:var(--y);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100% - 1160px)/2));border-bottom:1px solid #dfd300}.brand{display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:900}.brand span{background:var(--r);color:#fff;padding:8px;border-radius:7px}.brand small{font-size:9px;letter-spacing:.12em}button,.link{font:inherit;font-size:12px;font-weight:800;border:1px solid var(--line);background:#fff;padding:11px 14px;border-radius:10px;cursor:pointer;text-decoration:none;color:var(--ink)}button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}main{width:min(1160px,calc(100% - 32px));margin:30px auto 60px}h1,h2{font-family:'Archivo Black',Inter,sans-serif;font-weight:400;letter-spacing:-.04em}h1{font-size:clamp(28px,4vw,42px);margin:8px 0}h2{font-size:20px;margin:0 0 18px}.intro{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.16em;font-weight:900;color:var(--r)}.intro p:not(.eyebrow),.login p{color:var(--muted);font-size:13px}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;min-width:0}.login{max-width:440px;margin:7vh auto}.login label,form label{display:block;font-size:12px;font-weight:800;margin:13px 0}.field,input,select,textarea{font:inherit;font-size:13px;width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:6px;color:var(--ink)}textarea{resize:vertical}.workspace{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px}.panelHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}.panelHead h2{margin:0}.merchantList,.categoryList{display:grid;gap:8px;margin-top:14px}.item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px}.item strong{font-size:13px}.item small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.item button{padding:8px}.check{display:flex!important;align-items:center;gap:8px}.check input{width:auto;margin:0}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.msg{font-size:12px;color:var(--muted);line-height:1.5}.msg.error{color:var(--r)}.tabs{display:flex;gap:8px;margin-bottom:14px}.tab.active{background:var(--ink);color:#fff}.categoryForm{display:grid;grid-template-columns:1.2fr 1fr .5fr auto;gap:8px;align-items:center}.categoryForm input{margin:0}.categoryForm button{white-space:nowrap}[hidden]{display:none!important}@media(max-width:820px){.workspace{grid-template-columns:1fr}.categoryForm{grid-template-columns:1fr 1fr}.categoryForm button{grid-column:1/-1}}@media(max-width:520px){header{padding:0 14px}.brand{font-size:12px}.brand small{display:none}main{margin-top:18px}.panel{padding:15px}.intro{align-items:flex-start;flex-direction:column}.item{align-items:flex-start}.categoryForm{grid-template-columns:1fr}}
+.webForm{display:grid;gap:14px;max-width:760px}.webForm label{display:grid;gap:6px;font-size:13px;font-weight:700}.webForm input,.webForm textarea{width:100%;border:1px solid #dedbd2;border-radius:10px;padding:12px;font:inherit;background:#fff}.webForm .hint{font-size:12px;color:#65616a;margin:0}
+
+input[type=file]{font-size:12px;padding:9px;background:#fffdf6}.hint{display:block;font-size:11px;color:#65616a;font-weight:400;line-height:1.4}
+
+.categoryIntro{max-width:850px;line-height:1.6;margin:-6px 0 18px}.categoryActions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}.categoryActions button{font-size:11px;padding:8px}.categoryActions .danger{color:var(--r);border-color:#f0c5c5}.categoryActions button:disabled{opacity:.35;cursor:not-allowed}.previewTools{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fffdf6;display:grid;gap:12px}.previewTitle{font-weight:900;font-size:13px}.previewFrame{min-height:120px;background:#f0eee8;border:1px dashed #c8c2b5;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}.previewFrame img{display:block;max-width:100%;max-height:260px;object-fit:contain}.previewTools output{float:right;color:var(--r);font-weight:900}.previewTools input[type=range]{padding:0}.webForm .previewTools label{display:block}.webForm .previewTools input,.webForm .previewTools select{margin-top:7px}
+
+/* clearer upload feedback and mobile category controls */
+@media(max-width:520px){.previewFrame{min-height:100px}.previewFrame img{max-height:220px}.categoryActions{justify-content:flex-start}.categoryActions button{padding:7px;font-size:10px}}
+
+#removeHero{margin-top:8px;border:1px solid #e30613;background:#fff;color:#e30613;border-radius:9px;padding:10px 12px;font-weight:800;cursor:pointer}#removeHero:hover{background:#fff0f0}
+
+/* Keep commerce editor in normal page flow on desktop and mobile */
+#merchantTab.workspace{align-items:start}#merchantForm{position:static;align-self:start;max-height:none;overflow:visible}#merchantList{max-height:none;overflow:visible}.workspace>.panel{min-width:0}@media(min-width:821px){#merchantTab.workspace{grid-template-columns:minmax(280px,.9fr) minmax(0,1.1fr)}#merchantForm{position:static;top:auto}}@media(max-width:820px){#merchantTab.workspace{display:flex;flex-direction:column;align-items:stretch}#merchantTab #merchantList{order:1}#merchantTab #merchantForm{order:2;width:100%}#merchantTab .panel{width:100%}}
+
+/* Editor de comercios: lista compacta, logos y formulario persistente */
+@media(min-width:821px){
+ #merchantTab.workspace{grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);align-items:start}
+ #merchantTab.workspace> .panel:first-child{position:sticky;top:14px}
+ #merchantList{max-height:calc(100vh - 300px);overflow-y:auto;padding-right:4px;align-content:start}
+ #merchantForm{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow-y:auto;align-self:start}
+}
+.merchantList .item{padding:8px;gap:8px;min-width:0}
+.merchantList .item>div:first-child{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.merchantList .item strong{display:block;overflow-wrap:anywhere;font-size:12px}
+.merchantList .item small{font-size:10px}
+.merchantList .item button{flex:0 0 auto}
+.merchantThumb{width:42px;height:42px;border:1px solid var(--line);border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 42px;font-size:9px;text-align:center;font-weight:800;color:var(--muted)}
+.merchantThumb img{width:100%;height:100%;object-fit:contain}
+.logoEditor{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;align-items:center}
+.logoPreview{height:100px;border:1px solid var(--line);border-radius:12px;background:#fffdf6;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:11px;color:var(--muted);text-align:center}
+.logoPreview img{width:100%;height:100%;object-fit:contain}
+.logoInputs{min-width:0}.logoInputs input{margin:5px 0}
+.branchManager{border:1px solid var(--line);border-radius:12px;padding:12px;margin:14px 0;background:#fffdf6}
+.branchManager h3{font-size:13px;margin:0 0 5px}.branchManager p{font-size:11px;line-height:1.4;color:var(--muted);margin:4px 0 10px}
+.branchAdd{display:flex;gap:6px;align-items:center}.branchAdd input{margin:0;min-width:0}.branchAdd button{white-space:nowrap;padding:10px}
+.branchList{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.branchPill{border:1px solid #dedbd2;background:#fff;border-radius:999px;padding:5px 8px;display:flex;align-items:center;gap:6px;font-size:11px;max-width:100%}
+.branchPill button{border:0;padding:0;background:transparent;color:var(--r);font-size:14px}
+.branchPicker,.quotaEditor{border:1px solid var(--line);border-radius:12px;padding:13px;margin:14px 0;background:#fffdf6}
+.fieldHeading{display:grid;gap:4px;font-size:12px}.fieldHeading small{font-weight:400;color:var(--muted);line-height:1.4}
+.merchantBranches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.branchOption{display:flex!important;align-items:center;gap:8px;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;margin:0!important;min-width:0}
+.branchOption input{width:auto;margin:0;flex:0 0 auto}.branchOption span{overflow-wrap:anywhere;font-weight:600}
+.branchQuotaFields{display:grid;gap:8px;margin-top:10px}
+.branchQuotaRow{display:grid;grid-template-columns:minmax(110px,.8fr) minmax(0,1.2fr);gap:8px;align-items:center}
+.branchQuotaRow label{margin:0;font-size:11px;overflow-wrap:anywhere}.branchQuotaRow input{margin:0}
+@media(max-width:820px){.branchAdd{align-items:stretch}.merchantBranches{grid-template-columns:1fr}.branchQuotaRow{grid-template-columns:1fr}.logoEditor{grid-template-columns:76px minmax(0,1fr)}.logoPreview{height:76px}}
+
+/* Datos públicos de sucursales */
+.branchDetailsList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0}.branchDetailCard{border:1px solid #e4e0d7;border-radius:16px;padding:18px;background:#fffdf8;min-width:0}.branchDetailCard h3{margin:0 0 14px;font-size:18px}.branchDetailCard label{display:block;font-size:12px;font-weight:800;margin:12px 0;color:#514d55}.branchDetailCard input{display:block;width:100%;min-width:0;margin-top:6px;padding:12px;border:1px solid #d8d4cb;border-radius:10px;font:inherit;font-size:14px;background:white}.branchDetailCard input:focus{outline:2px solid #ffed00;border-color:#1b1a1e}@media(max-width:760px){.branchDetailsList{grid-template-columns:1fr}.branchDetailCard{padding:14px}}
