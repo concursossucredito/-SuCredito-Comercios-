@@ -25,7 +25,9 @@ alter table public.comercios_analytics_events add column if not exists utm_mediu
 alter table public.comercios_analytics_events add column if not exists utm_campaign text;
 alter table public.comercios_analytics_events add column if not exists dispositivo text;
 alter table public.comercios_analytics_events add column if not exists navegador text;
-alter table public.comercios_analytics_events add column if not exists sistema_operativo text;\nalter table public.comercios_analytics_events add column if not exists tipo_evento text not null default 'page_view';\nalter table public.comercios_analytics_events add column if not exists detalle_evento text;
+alter table public.comercios_analytics_events add column if not exists sistema_operativo text;
+alter table public.comercios_analytics_events add column if not exists tipo_evento text not null default 'page_view';
+alter table public.comercios_analytics_events add column if not exists detalle_evento text;
 alter table public.comercios_analytics_events enable row level security;
 revoke all on public.comercios_analytics_events from anon, authenticated;
 create index if not exists comercios_analytics_events_created_at_idx on public.comercios_analytics_events (created_at desc);
@@ -52,7 +54,23 @@ $$;
 revoke all on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text,text,text,text) from public;
 grant execute on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text,text,text,text) to anon, authenticated;
 
-\n-- Registra páginas y acciones de navegación manteniendo la atribución de campaña.\ncreate or replace function public.registrar_evento_comercios(\n  p_visitor_id uuid, p_event_type text default 'page_view', p_event_detail text default null,\n  p_page_path text default '/', p_localidad text default null, p_provincia text default null,\n  p_utm_source text default null, p_utm_medium text default null, p_utm_campaign text default null,\n  p_device_type text default null, p_browser text default null, p_os text default null\n) returns void language plpgsql security definer set search_path = '' as $\nbegin\n  if p_visitor_id is null then return; end if;\n  insert into public.comercios_analytics_events(visitor_id,page_path,localidad,provincia,utm_source,utm_medium,utm_campaign,dispositivo,navegador,sistema_operativo,tipo_evento,detalle_evento)\n  values(p_visitor_id,left(coalesce(p_page_path,'/'),220),left(nullif(p_localidad,''),100),left(nullif(p_provincia,''),100),left(nullif(p_utm_source,''),100),left(nullif(p_utm_medium,''),100),left(nullif(p_utm_campaign,''),150),left(nullif(p_device_type,''),40),left(nullif(p_browser,''),40),left(nullif(p_os,''),40),left(coalesce(nullif(p_event_type,''),'page_view'),40),left(nullif(p_event_detail,''),180));\nend; $;\nrevoke all on function public.registrar_evento_comercios(uuid,text,text,text,text,text,text,text,text,text,text,text) from public;\ngrant execute on function public.registrar_evento_comercios(uuid,text,text,text,text,text,text,text,text,text,text,text) to anon, authenticated;\n\ndrop function if exists public.obtener_estadisticas_comercios(date,date);
+
+-- Registra páginas y acciones de navegación manteniendo la atribución de campaña.
+create or replace function public.registrar_evento_comercios(
+  p_visitor_id uuid, p_event_type text default 'page_view', p_event_detail text default null,
+  p_page_path text default '/', p_localidad text default null, p_provincia text default null,
+  p_utm_source text default null, p_utm_medium text default null, p_utm_campaign text default null,
+  p_device_type text default null, p_browser text default null, p_os text default null
+) returns void language plpgsql security definer set search_path = '' as $
+begin
+  if p_visitor_id is null then return; end if;
+  insert into public.comercios_analytics_events(visitor_id,page_path,localidad,provincia,utm_source,utm_medium,utm_campaign,dispositivo,navegador,sistema_operativo,tipo_evento,detalle_evento)
+  values(p_visitor_id,left(coalesce(p_page_path,'/'),220),left(nullif(p_localidad,''),100),left(nullif(p_provincia,''),100),left(nullif(p_utm_source,''),100),left(nullif(p_utm_medium,''),100),left(nullif(p_utm_campaign,''),150),left(nullif(p_device_type,''),40),left(nullif(p_browser,''),40),left(nullif(p_os,''),40),left(coalesce(nullif(p_event_type,''),'page_view'),40),left(nullif(p_event_detail,''),180));
+end; $;
+revoke all on function public.registrar_evento_comercios(uuid,text,text,text,text,text,text,text,text,text,text,text) from public;
+grant execute on function public.registrar_evento_comercios(uuid,text,text,text,text,text,text,text,text,text,text,text) to anon, authenticated;
+
+drop function if exists public.obtener_estadisticas_comercios(date,date);
 drop function if exists public.obtener_estadisticas_comercios(date,date,text);
 
 create or replace function public.obtener_estadisticas_comercios(
@@ -100,7 +118,8 @@ begin
         group by extract(hour from created_at at time zone 'America/Argentina/Buenos_Aires')::int
       ) h
     ),'[]'::jsonb),
-    'journeys', coalesce((select jsonb_agg(jsonb_build_object('visitor',j.visitor_id::text,'campana',j.campana,'events',j.events) order by j.last_seen desc) from (select visitor_id,max(created_at) last_seen,coalesce(nullif(max(utm_campaign),''),'Sin campaña') campana,jsonb_agg(jsonb_build_object('hora',created_at,'tipo',tipo_evento,'detalle',coalesce(nullif(detalle_evento,''),page_path),'pagina',page_path) order by created_at) events from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by visitor_id order by max(created_at) desc limit 60) j),'[]'::jsonb),\n    'top_pages', coalesce((
+    'journeys', coalesce((select jsonb_agg(jsonb_build_object('visitor',j.visitor_id::text,'campana',j.campana,'events',j.events) order by j.last_seen desc) from (select visitor_id,max(created_at) last_seen,coalesce(nullif(max(utm_campaign),''),'Sin campaña') campana,jsonb_agg(jsonb_build_object('hora',created_at,'tipo',tipo_evento,'detalle',coalesce(nullif(detalle_evento,''),page_path),'pagina',page_path) order by created_at) events from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by visitor_id order by max(created_at) desc limit 60) j),'[]'::jsonb),
+    'top_pages', coalesce((
       select jsonb_agg(jsonb_build_object('path',p.page_path,'views',p.views) order by p.views desc)
       from (select page_path,count(*)::int views from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta
