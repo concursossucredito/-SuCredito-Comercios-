@@ -61,12 +61,12 @@ create or replace function public.registrar_evento_comercios(
   p_page_path text default '/', p_localidad text default null, p_provincia text default null,
   p_utm_source text default null, p_utm_medium text default null, p_utm_campaign text default null,
   p_device_type text default null, p_browser text default null, p_os text default null
-) returns void language plpgsql security definer set search_path = '' as $
+) returns void language plpgsql security definer set search_path = '' as $$
 begin
   if p_visitor_id is null then return; end if;
   insert into public.comercios_analytics_events(visitor_id,page_path,localidad,provincia,utm_source,utm_medium,utm_campaign,dispositivo,navegador,sistema_operativo,tipo_evento,detalle_evento)
   values(p_visitor_id,left(coalesce(p_page_path,'/'),220),left(nullif(p_localidad,''),100),left(nullif(p_provincia,''),100),left(nullif(p_utm_source,''),100),left(nullif(p_utm_medium,''),100),left(nullif(p_utm_campaign,''),150),left(nullif(p_device_type,''),40),left(nullif(p_browser,''),40),left(nullif(p_os,''),40),left(coalesce(nullif(p_event_type,''),'page_view'),40),left(nullif(p_event_detail,''),180));
-end; $;
+end; $$;
 revoke all on function public.registrar_evento_comercios(uuid,text,text,text,text,text,text,text,text,text,text,text) from public;
 grant execute on function public.registrar_evento_comercios(uuid,text,text,text,text,text,text,text,text,text,text,text) to anon, authenticated;
 
