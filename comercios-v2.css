@@ -30,3 +30,20 @@
 .heroCarousel{position:relative!important;display:block!important;width:100%!important;max-width:100%!important;overflow:hidden!important;contain:paint!important}.heroCarousel .heroSlides{display:flex!important;height:100%!important;max-width:none!important;min-width:0!important;flex:0 0 auto!important;transition:transform .38s ease;overflow:visible!important}.heroCarousel .heroSlide{height:100%!important;min-width:0!important;max-width:none!important;flex-shrink:0!important;overflow:hidden!important}.heroCarousel .heroSlideImage{width:100%!important;min-width:0!important;max-width:100%!important;height:100%!important;flex:none!important;object-fit:contain!important;}
 
 .routeIntro{padding-top:22px;padding-bottom:8px}.routeIntro[hidden]{display:none}.routeIntro h1{font-size:clamp(1.5rem,4vw,2.5rem);margin:.25rem 0}.routeIntro p{margin:.35rem 0}.routeEyebrow{font-size:.75rem;font-weight:800;letter-spacing:.12em;color:#E30613}
+
+/* Ajustes mobile: enlaces sin azul automático y rubros con iconografía uniforme */
+a:link,a:visited,a:hover,a:active{color:inherit}
+.branchPublicLink{color:#B9000B!important}
+.chips{align-items:stretch}
+.chip{gap:9px;min-width:0;max-width:100%;white-space:normal;hyphens:none;overflow-wrap:normal;word-break:normal;color:var(--ink);text-decoration:none}
+.chip:visited,.chip:hover,.chip:active{color:var(--ink);text-decoration:none}
+.chipLabel{display:block;min-width:0;line-height:1.2;hyphens:none;overflow-wrap:normal;word-break:normal}
+.chipIconSvg{width:22px;height:22px;flex:0 0 22px;fill:none;stroke:#6B00D7;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip.active .chipIconSvg{stroke:var(--ink)}
+@media(max-width:850px){
+ .chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .chip{min-height:78px;padding:10px 7px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:11px;line-height:1.15}
+ .chipIconSvg{width:25px;height:25px;flex-basis:25px}
+ .chipLabel{max-width:100%;text-wrap:balance}
+}
+@media(max-width:380px){.chips{grid-template-columns:repeat(2,minmax(0,1fr))}.chip{min-height:72px;font-size:11px}}
