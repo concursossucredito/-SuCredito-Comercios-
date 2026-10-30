@@ -58,7 +58,7 @@ begin
   select jsonb_build_object(
     'total_views', count(*),
     'unique_visitors', count(distinct visitor_id),
-    'daily', coalesce((select jsonb_agg(jsonb_build_object('date',d.day,'views',d.views,'visitors',d.visitors) order by d.dia)
+    'daily', coalesce((select jsonb_agg(jsonb_build_object('date',d.dia,'views',d.views,'visitors',d.visitors) order by d.dia)
       from (select days.dia::date as dia, count(e.id)::int as views, count(distinct e.visitor_id)::int as visitors
         from generate_series(v_desde::timestamp, v_hasta::timestamp, interval '1 day') as days(dia)
         left join public.comercios_analytics_events e on e.created_at >= days.dia and e.created_at < days.dia + interval '1 day'
