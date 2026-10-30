@@ -96,7 +96,7 @@ begin
     'top_pages', coalesce((
       select jsonb_agg(jsonb_build_object('path',p.page_path,'views',p.views) order by p.views desc)
       from (select page_path,count(*)::int views from public.comercios_analytics_events
-        where created_at >= v_desde and created_at < v_hasta + 1
+        where created_at >= v_desde and created_at < v_hasta
           and (v_campana is null or utm_campaign=v_campana)
         group by page_path order by count(*) desc limit 10) p
     ),'[]'::jsonb),
@@ -104,7 +104,7 @@ begin
       select jsonb_agg(jsonb_build_object('nombre',p.nombre,'visitas',p.visitas,'visitantes',p.visitantes) order by p.visitas desc)
       from (select coalesce(nullif(localidad,''),'No identificada') nombre,count(*)::int visitas,
         count(distinct visitor_id)::int visitantes from public.comercios_analytics_events
-        where created_at >= v_desde and created_at < v_hasta + 1
+        where created_at >= v_desde and created_at < v_hasta
           and (v_campana is null or utm_campaign=v_campana)
         group by 1 order by count(*) desc limit 20) p
     ),'[]'::jsonb),
@@ -112,7 +112,7 @@ begin
       select jsonb_agg(jsonb_build_object('nombre',p.nombre,'visitas',p.visitas,'visitantes',p.visitantes) order by p.visitas desc)
       from (select coalesce(nullif(provincia,''),'No identificada') nombre,count(*)::int visitas,
         count(distinct visitor_id)::int visitantes from public.comercios_analytics_events
-        where created_at >= v_desde and created_at < v_hasta + 1
+        where created_at >= v_desde and created_at < v_hasta
           and (v_campana is null or utm_campaign=v_campana)
         group by 1 order by count(*) desc limit 20) p
     ),'[]'::jsonb),
@@ -121,12 +121,12 @@ begin
       from (select coalesce(nullif(utm_campaign,''),'Sin campaña etiquetada') campana,
         coalesce(nullif(utm_source,''),'Sin origen') origen,count(*)::int visitas,
         count(distinct visitor_id)::int visitantes from public.comercios_analytics_events
-        where created_at >= v_desde and created_at < v_hasta + 1
+        where created_at >= v_desde and created_at < v_hasta
         group by 1,2 order by count(*) desc limit 50) p
     ),'[]'::jsonb)
   ) into result
   from public.comercios_analytics_events
-  where created_at >= v_desde and created_at < v_hasta + 1
+  where created_at >= v_desde and created_at < v_hasta
     and (v_campana is null or utm_campaign=v_campana);
   return result;
 end;
