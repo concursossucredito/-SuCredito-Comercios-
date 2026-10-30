@@ -45,9 +45,12 @@ $$;
 revoke all on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text) from public;
 grant execute on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text) to anon, authenticated;
 
+drop function if exists public.obtener_estadisticas_comercios(date,date);
+drop function if exists public.obtener_estadisticas_comercios(date,date,text);
+
 create or replace function public.obtener_estadisticas_comercios(
-  p_desde date default current_date - 29,
-  p_hasta date default current_date,
+  p_desde timestamptz default (now() - interval '29 days'),
+  p_hasta timestamptz default now(),
   p_campana text default null
 )
 returns jsonb
@@ -55,15 +58,15 @@ language plpgsql security definer set search_path = ''
 as $$
 declare
   result jsonb;
-  v_desde date := coalesce(p_desde,current_date-29);
-  v_hasta date := coalesce(p_hasta,current_date);
+  v_desde timestamptz := coalesce(p_desde,now()-interval '29 days');
+  v_hasta timestamptz := coalesce(p_hasta,now());
   v_campana text := nullif(trim(p_campana),'');
 begin
   if auth.uid() is null or not exists (
     select 1 from public.comercios_admins a
     where a.user_id=auth.uid() and a.activo=true
   ) then raise exception 'No autorizado para consultar estadísticas'; end if;
-  if v_hasta < v_desde then raise exception 'El rango de fechas no es válido'; end if;
+  if v_hasta <= v_desde then raise exception 'El rango de fecha y hora no es válido'; end if;
 
   select jsonb_build_object(
     'total_views', count(*),
@@ -72,9 +75,9 @@ begin
       select jsonb_agg(jsonb_build_object('date',d.dia,'views',d.views,'visitors',d.visitors) order by d.dia)
       from (
         select days.dia::date as dia,count(e.id)::int as views,count(distinct e.visitor_id)::int as visitors
-        from generate_series(v_desde::timestamp,v_hasta::timestamp,interval '1 day') as days(dia)
+        from generate_series(date_trunc('day',v_desde at time zone 'America/Argentina/Buenos_Aires'),date_trunc('day',v_hasta at time zone 'America/Argentina/Buenos_Aires'),interval '1 day') as days(dia)
         left join public.comercios_analytics_events e
-          on e.created_at >= days.dia and e.created_at < days.dia + interval '1 day'
+          on e.created_at >= greatest(v_desde, days.dia at time zone 'America/Argentina/Buenos_Aires') and e.created_at < least(v_hasta, (days.dia + interval '1 day') at time zone 'America/Argentina/Buenos_Aires')
           and (v_campana is null or e.utm_campaign=v_campana)
         group by days.dia::date
       ) d
@@ -85,7 +88,7 @@ begin
         select extract(hour from created_at at time zone 'America/Argentina/Buenos_Aires')::int as hora,count(*)::int as views,
           count(distinct visitor_id)::int as visitors
         from public.comercios_analytics_events
-        where created_at >= v_desde and created_at < v_hasta + 1
+        where created_at >= v_desde and created_at < v_hasta
           and (v_campana is null or utm_campaign=v_campana)
         group by extract(hour from created_at at time zone 'America/Argentina/Buenos_Aires')::int
       ) h
@@ -128,6 +131,5 @@ begin
   return result;
 end;
 $$;
-revoke all on function public.obtener_estadisticas_comercios(date,date) from public, anon;
-revoke all on function public.obtener_estadisticas_comercios(date,date,text) from public, anon;
-grant execute on function public.obtener_estadisticas_comercios(date,date,text) to authenticated;
+revoke all on function public.obtener_estadisticas_comercios(timestamptz,timestamptz,text) from public, anon;
+grant execute on function public.obtener_estadisticas_comercios(timestamptz,timestamptz,text) to authenticated;
