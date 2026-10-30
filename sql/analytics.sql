@@ -10,7 +10,10 @@ create table if not exists public.comercios_analytics_events (
   referrer text,
   utm_source text,
   utm_medium text,
-  utm_campaign text
+  utm_campaign text,
+  dispositivo text,
+  navegador text,
+  sistema_operativo text
 );
 alter table public.comercios_analytics_events add column if not exists localidad text;
 alter table public.comercios_analytics_events add column if not exists provincia text;
@@ -18,32 +21,34 @@ alter table public.comercios_analytics_events add column if not exists referrer 
 alter table public.comercios_analytics_events add column if not exists utm_source text;
 alter table public.comercios_analytics_events add column if not exists utm_medium text;
 alter table public.comercios_analytics_events add column if not exists utm_campaign text;
+alter table public.comercios_analytics_events add column if not exists dispositivo text;
+alter table public.comercios_analytics_events add column if not exists navegador text;
+alter table public.comercios_analytics_events add column if not exists sistema_operativo text;
 alter table public.comercios_analytics_events enable row level security;
 revoke all on public.comercios_analytics_events from anon, authenticated;
 create index if not exists comercios_analytics_events_created_at_idx on public.comercios_analytics_events (created_at desc);
 create index if not exists comercios_analytics_events_visitor_day_idx on public.comercios_analytics_events (visitor_id, created_at desc);
 
+drop function if exists public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text);
 create or replace function public.registrar_visita_comercios(
   p_visitor_id uuid, p_page_path text default '/', p_localidad text default null,
   p_provincia text default null, p_referrer text default null,
-  p_utm_source text default null, p_utm_medium text default null, p_utm_campaign text default null
+  p_utm_source text default null, p_utm_medium text default null, p_utm_campaign text default null,
+  p_device_type text default null, p_browser text default null, p_os text default null
 ) returns void
 language plpgsql security definer set search_path = ''
 as $$
 begin
   if p_visitor_id is null then return; end if;
-  insert into public.comercios_analytics_events(visitor_id,page_path,localidad,provincia,referrer,utm_source,utm_medium,utm_campaign)
-  values (
-    p_visitor_id,
-    left(regexp_replace(coalesce(p_page_path,'/'), '[^a-zA-Z0-9/_?=&%-]', '', 'g'), 180),
-    left(nullif(p_localidad,''),100), left(nullif(p_provincia,''),100),
-    left(nullif(p_referrer,''),300), left(nullif(p_utm_source,''),100),
-    left(nullif(p_utm_medium,''),100), left(nullif(p_utm_campaign,''),150)
-  );
+  insert into public.comercios_analytics_events(visitor_id,page_path,localidad,provincia,referrer,utm_source,utm_medium,utm_campaign,dispositivo,navegador,sistema_operativo)
+  values (p_visitor_id,left(regexp_replace(coalesce(p_page_path,'/'),'[^a-zA-Z0-9/_?=&%#-]','','g'),220),
+    left(nullif(p_localidad,''),100),left(nullif(p_provincia,''),100),left(nullif(p_referrer,''),300),
+    left(nullif(p_utm_source,''),100),left(nullif(p_utm_medium,''),100),left(nullif(p_utm_campaign,''),150),
+    left(nullif(p_device_type,''),40),left(nullif(p_browser,''),40),left(nullif(p_os,''),40));
 end;
 $$;
-revoke all on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text) from public;
-grant execute on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text) to anon, authenticated;
+revoke all on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text,text,text,text) from public;
+grant execute on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text,text,text,text) to anon, authenticated;
 
 drop function if exists public.obtener_estadisticas_comercios(date,date);
 drop function if exists public.obtener_estadisticas_comercios(date,date,text);
@@ -116,6 +121,9 @@ begin
           and (v_campana is null or utm_campaign=v_campana)
         group by 1 order by count(*) desc limit 20) p
     ),'[]'::jsonb),
+    'dispositivos', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas,'visitantes',x.visitantes) order by x.visitas desc) from (select coalesce(nullif(dispositivo,''),'No identificado') nombre,count(*)::int visitas,count(distinct visitor_id)::int visitantes from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
+    'navegadores', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas) order by x.visitas desc) from (select coalesce(nullif(navegador,''),'No identificado') nombre,count(*)::int visitas from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
+    'sistemas', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas) order by x.visitas desc) from (select coalesce(nullif(sistema_operativo,''),'No identificado') nombre,count(*)::int visitas from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
     'campaigns', coalesce((
       select jsonb_agg(jsonb_build_object('campana',p.campana,'origen',p.origen,'visitas',p.visitas,'visitantes',p.visitantes) order by p.visitas desc)
       from (select coalesce(nullif(utm_campaign,''),'Sin campaña etiquetada') campana,
