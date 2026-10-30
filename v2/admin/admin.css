@@ -79,3 +79,52 @@ input[type=file]{font-size:12px;padding:9px;background:#fffdf6}.hint{display:blo
 
 /* Módulo de campañas */
 .campaignForm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fffdf6}.campaignForm label{display:grid;gap:6px;font-size:12px;font-weight:800}.campaignForm input,.campaignForm select{width:100%;min-width:0;padding:11px;border:1px solid #dedbd2;border-radius:9px;background:#fff;font:inherit}.campaignForm button{grid-column:1/-1;justify-self:start}.campaignList{display:grid;gap:10px;margin-top:16px}.campaignCard{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fffdf8;min-width:0}.campaignCard>div:first-child{display:grid;gap:4px}.campaignCard strong{font-size:14px;overflow-wrap:anywhere}.campaignCard small{font-size:11px;color:var(--muted)}.campaignCard>input{width:100%;min-width:0;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fff;font:12px monospace}.campaignActions{display:flex;gap:8px;flex-wrap:wrap}.campaignActions button{padding:9px 12px}.campaignActions .danger{color:var(--r);border-color:#efcaca;background:#fff}@media(max-width:760px){.campaignForm{grid-template-columns:1fr}.campaignForm button{grid-column:auto}}
+
+/* Mobile real: el panel ocupa todo el ancho disponible */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+main{display:block;width:min(1160px,calc(100% - 32px));max-width:100%;min-width:0}
+#app{display:block;width:100%;min-width:0}
+#app>section,#analyticsTab,.panel{width:100%;max-width:100%;min-width:0}
+.tabs{display:flex;flex-wrap:wrap;max-width:100%;min-width:0}
+.analyticsFilters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+.analyticsFilters label{min-width:0;width:100%}
+.analyticsFilters button{min-height:42px}
+.analyticsSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+.analyticsColumns{grid-template-columns:minmax(0,1fr)}
+.analyticsColumns>div{width:100%;min-width:0}
+.analyticsWide{grid-column:auto}
+.analyticsTable{width:100%;min-width:0}
+.analyticsTable table{min-width:100%}
+.analyticsDailyChart{grid-template-columns:repeat(2,minmax(0,1fr))}
+.analyticsHourlyChart{grid-template-columns:repeat(24,20px);overflow-x:auto}
+@media(max-width:600px){
+ header{width:100%;height:58px;padding:0 12px}
+ main{width:calc(100% - 24px);margin:14px auto 32px}
+ .intro{gap:10px;margin-bottom:14px}
+ .intro h1{font-size:27px;line-height:1.08}
+ .intro p:not(.eyebrow){font-size:12px;line-height:1.4}
+ .panel{padding:14px;border-radius:14px}
+ .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:10px}
+ .tab{min-width:0;min-height:42px;padding:8px 4px;font-size:10px;line-height:1.15;white-space:normal}
+ #analyticsTab h2{font-size:18px;margin-bottom:8px}
+ #analyticsTab>p:not(.msg){font-size:12px;line-height:1.4}
+ .analyticsFilters{grid-template-columns:1fr;gap:8px;margin:12px 0}
+ .analyticsFilters label{font-size:11px;margin:0}
+ .analyticsFilters input,.analyticsFilters select{font-size:14px;padding:11px;margin-top:4px}
+ .analyticsFilters button{width:100%;min-height:42px}
+ .analyticsSummary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+ .analyticsKpi{padding:12px;border-radius:12px;min-width:0}
+ .analyticsKpi strong{font-size:21px;line-height:1.15;overflow-wrap:anywhere}
+ .analyticsKpi span{font-size:10px;line-height:1.25}
+ .analyticsColumns{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}
+ .analyticsColumns h3{font-size:14px}
+ .analyticsDailyChart{grid-template-columns:1fr;gap:8px;padding:9px}
+ .analyticsHourlyChart{grid-template-columns:repeat(24,18px);height:135px;padding:9px 6px;gap:3px}
+ .analyticsTable table{font-size:11px}
+ .analyticsTable th,.analyticsTable td{padding:8px 6px}
+}
+@media(max-width:360px){
+ main{width:calc(100% - 18px)}
+ .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .analyticsSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
