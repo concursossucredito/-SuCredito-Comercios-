@@ -1,87 +1,86 @@
--- Estadísticas de visitas para Sucrédito Comercios
--- Ejecutar una sola vez en Supabase > SQL Editor.
+-- Métricas propias para Sucrédito Comercios.
+-- Ejecutar en Supabase > SQL Editor. Los eventos se registran desde la página pública.
 create table if not exists public.comercios_analytics_events (
   id bigint generated always as identity primary key,
   created_at timestamptz not null default now(),
   visitor_id uuid not null,
-  page_path text not null default '/'
+  page_path text not null default '/',
+  localidad text,
+  provincia text,
+  referrer text,
+  utm_source text,
+  utm_medium text,
+  utm_campaign text
 );
-
+alter table public.comercios_analytics_events add column if not exists localidad text;
+alter table public.comercios_analytics_events add column if not exists provincia text;
+alter table public.comercios_analytics_events add column if not exists referrer text;
+alter table public.comercios_analytics_events add column if not exists utm_source text;
+alter table public.comercios_analytics_events add column if not exists utm_medium text;
+alter table public.comercios_analytics_events add column if not exists utm_campaign text;
 alter table public.comercios_analytics_events enable row level security;
 revoke all on public.comercios_analytics_events from anon, authenticated;
+create index if not exists comercios_analytics_events_created_at_idx on public.comercios_analytics_events (created_at desc);
+create index if not exists comercios_analytics_events_visitor_day_idx on public.comercios_analytics_events (visitor_id, created_at desc);
 
-create index if not exists comercios_analytics_events_created_at_idx
-  on public.comercios_analytics_events (created_at desc);
-create index if not exists comercios_analytics_events_visitor_day_idx
-  on public.comercios_analytics_events (visitor_id, created_at desc);
-
-create or replace function public.registrar_visita_comercios(p_visitor_id uuid, p_page_path text default '/')
-returns void
-language plpgsql
-security definer
-set search_path = ''
+create or replace function public.registrar_visita_comercios(
+  p_visitor_id uuid, p_page_path text default '/', p_localidad text default null,
+  p_provincia text default null, p_referrer text default null,
+  p_utm_source text default null, p_utm_medium text default null, p_utm_campaign text default null
+) returns void
+language plpgsql security definer set search_path = ''
 as $$
 begin
   if p_visitor_id is null then return; end if;
-  insert into public.comercios_analytics_events(visitor_id, page_path)
+  insert into public.comercios_analytics_events(visitor_id,page_path,localidad,provincia,referrer,utm_source,utm_medium,utm_campaign)
   values (
     p_visitor_id,
-    left(regexp_replace(coalesce(p_page_path, '/'), '[^a-zA-Z0-9/_-]', '', 'g'), 180)
+    left(regexp_replace(coalesce(p_page_path,'/'), '[^a-zA-Z0-9/_?=&%-]', '', 'g'), 180),
+    left(nullif(p_localidad,''),100), left(nullif(p_provincia,''),100),
+    left(nullif(p_referrer,''),300), left(nullif(p_utm_source,''),100),
+    left(nullif(p_utm_medium,''),100), left(nullif(p_utm_campaign,''),150)
   );
 end;
 $$;
+revoke all on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text) from public;
+grant execute on function public.registrar_visita_comercios(uuid,text,text,text,text,text,text,text) to anon, authenticated;
 
-revoke all on function public.registrar_visita_comercios(uuid, text) from public;
-grant execute on function public.registrar_visita_comercios(uuid, text) to anon, authenticated;
-
-create or replace function public.obtener_estadisticas_comercios()
+create or replace function public.obtener_estadisticas_comercios(p_desde date default current_date - 29, p_hasta date default current_date)
 returns jsonb
-language plpgsql
-security definer
-set search_path = ''
+language plpgsql security definer set search_path = ''
 as $$
-declare
-  result jsonb;
+declare result jsonb; v_desde date := coalesce(p_desde,current_date-29); v_hasta date := coalesce(p_hasta,current_date);
 begin
-  if auth.uid() is null or not exists (
-    select 1 from public.comercios_admins a
-    where a.user_id = auth.uid() and a.activo = true
-  ) then
+  if auth.uid() is null or not exists (select 1 from public.comercios_admins a where a.user_id=auth.uid() and a.activo=true) then
     raise exception 'No autorizado para consultar estadísticas';
   end if;
-
+  if v_hasta < v_desde then raise exception 'El rango de fechas no es válido'; end if;
   select jsonb_build_object(
-    'total_views', (select count(*) from public.comercios_analytics_events),
-    'unique_visitors', (select count(distinct visitor_id) from public.comercios_analytics_events),
-    'views_30_days', (select count(*) from public.comercios_analytics_events where created_at >= now() - interval '30 days'),
-    'visitors_30_days', (select count(distinct visitor_id) from public.comercios_analytics_events where created_at >= now() - interval '30 days'),
-    'daily', coalesce((
-      select jsonb_agg(jsonb_build_object('date', d.day, 'views', d.views, 'visitors', d.visitors) order by d.day)
-      from (
-        select day::date as day,
-               count(e.id)::int as views,
-               count(distinct e.visitor_id)::int as visitors
-        from generate_series(current_date - 29, current_date, interval '1 day') as day
-        left join public.comercios_analytics_events e
-          on e.created_at >= day and e.created_at < day + interval '1 day'
-        group by day::date
-      ) d
-    ), '[]'::jsonb),
-    'top_pages', coalesce((
-      select jsonb_agg(jsonb_build_object('path', p.page_path, 'views', p.views) order by p.views desc)
-      from (
-        select page_path, count(*)::int as views
-        from public.comercios_analytics_events
-        where created_at >= now() - interval '30 days'
-        group by page_path
-        order by count(*) desc
-        limit 8
-      ) p
-    ), '[]'::jsonb)
-  ) into result;
+    'total_views', count(*),
+    'unique_visitors', count(distinct visitor_id),
+    'daily', coalesce((select jsonb_agg(jsonb_build_object('date',d.day,'views',d.views,'visitors',d.visitors) order by d.day)
+      from (select days.day::date day, count(e.id)::int views, count(distinct e.visitor_id)::int visitors
+        from generate_series(v_desde::timestamp, v_hasta::timestamp, interval '1 day') days(day)
+        left join public.comercios_analytics_events e on e.created_at >= days.day and e.created_at < days.day + interval '1 day'
+        group by days.day::date) d),'[]'::jsonb),
+    'top_pages', coalesce((select jsonb_agg(jsonb_build_object('path',p.page_path,'views',p.views) order by p.views desc)
+      from (select page_path,count(*)::int views from public.comercios_analytics_events
+        where created_at >= v_desde and created_at < v_hasta + 1 group by page_path order by count(*) desc limit 10) p),'[]'::jsonb),
+    'localidades', coalesce((select jsonb_agg(jsonb_build_object('nombre',p.nombre,'visitas',p.visitas,'visitantes',p.visitantes) order by p.visitas desc)
+      from (select coalesce(nullif(localidad,''),'No identificada') nombre,count(*)::int visitas,count(distinct visitor_id)::int visitantes
+        from public.comercios_analytics_events where created_at >= v_desde and created_at < v_hasta + 1
+        group by 1 order by count(*) desc limit 20) p),'[]'::jsonb),
+    'provincias', coalesce((select jsonb_agg(jsonb_build_object('nombre',p.nombre,'visitas',p.visitas,'visitantes',p.visitantes) order by p.visitas desc)
+      from (select coalesce(nullif(provincia,''),'No identificada') nombre,count(*)::int visitas,count(distinct visitor_id)::int visitantes
+        from public.comercios_analytics_events where created_at >= v_desde and created_at < v_hasta + 1
+        group by 1 order by count(*) desc limit 20) p),'[]'::jsonb),
+    'campaigns', coalesce((select jsonb_agg(jsonb_build_object('campana',p.campana,'origen',p.origen,'visitas',p.visitas,'visitantes',p.visitantes) order by p.visitas desc)
+      from (select coalesce(nullif(utm_campaign,''),'Sin campaña etiquetada') campana,coalesce(nullif(utm_source,''),'Sin origen') origen,
+        count(*)::int visitas,count(distinct visitor_id)::int visitantes from public.comercios_analytics_events
+        where created_at >= v_desde and created_at < v_hasta + 1 group by 1,2 order by count(*) desc limit 20) p),'[]'::jsonb)
+  ) into result from public.comercios_analytics_events where created_at >= v_desde and created_at < v_hasta + 1;
   return result;
 end;
 $$;
-
-revoke all on function public.obtener_estadisticas_comercios() from public, anon;
-grant execute on function public.obtener_estadisticas_comercios() to authenticated;
+revoke all on function public.obtener_estadisticas_comercios(date,date) from public, anon;
+grant execute on function public.obtener_estadisticas_comercios(date,date) to authenticated;
