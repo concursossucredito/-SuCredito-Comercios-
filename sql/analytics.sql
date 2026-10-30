@@ -82,12 +82,12 @@ begin
     'hourly', coalesce((
       select jsonb_agg(jsonb_build_object('hour',h.hora,'views',h.views,'visitors',h.visitors) order by h.hora)
       from (
-        select extract(hour from created_at)::int as hora,count(*)::int as views,
+        select extract(hour from created_at at time zone 'America/Argentina/Buenos_Aires')::int as hora,count(*)::int as views,
           count(distinct visitor_id)::int as visitors
         from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta + 1
           and (v_campana is null or utm_campaign=v_campana)
-        group by extract(hour from created_at)::int
+        group by extract(hour from created_at at time zone 'America/Argentina/Buenos_Aires')::int
       ) h
     ),'[]'::jsonb),
     'top_pages', coalesce((
