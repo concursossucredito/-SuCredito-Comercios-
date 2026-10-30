@@ -58,11 +58,11 @@ begin
   select jsonb_build_object(
     'total_views', count(*),
     'unique_visitors', count(distinct visitor_id),
-    'daily', coalesce((select jsonb_agg(jsonb_build_object('date',d.day,'views',d.views,'visitors',d.visitors) order by d.day)
-      from (select days.day::date day, count(e.id)::int views, count(distinct e.visitor_id)::int visitors
-        from generate_series(v_desde::timestamp, v_hasta::timestamp, interval '1 day') days(day)
-        left join public.comercios_analytics_events e on e.created_at >= days.day and e.created_at < days.day + interval '1 day'
-        group by days.day::date) d),'[]'::jsonb),
+    'daily', coalesce((select jsonb_agg(jsonb_build_object('date',d.day,'views',d.views,'visitors',d.visitors) order by d.dia)
+      from (select days.dia::date as dia, count(e.id)::int as views, count(distinct e.visitor_id)::int as visitors
+        from generate_series(v_desde::timestamp, v_hasta::timestamp, interval '1 day') as days(dia)
+        left join public.comercios_analytics_events e on e.created_at >= days.dia and e.created_at < days.dia + interval '1 day'
+        group by days.dia::date) d),'[]'::jsonb),
     'top_pages', coalesce((select jsonb_agg(jsonb_build_object('path',p.page_path,'views',p.views) order by p.views desc)
       from (select page_path,count(*)::int views from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta + 1 group by page_path order by count(*) desc limit 10) p),'[]'::jsonb),
