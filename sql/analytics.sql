@@ -94,8 +94,8 @@ begin
   if v_hasta <= v_desde then raise exception 'El rango de fecha y hora no es válido'; end if;
 
   select jsonb_build_object(
-    'total_views', count(*),
-    'unique_visitors', count(distinct visitor_id),
+    'total_views', count(*) filter (where tipo_evento='page_view'),
+    'unique_visitors', count(distinct visitor_id) filter (where tipo_evento='page_view'),
     'daily', coalesce((
       select jsonb_agg(jsonb_build_object('date',d.dia,'views',d.views,'visitors',d.visitors) order by d.dia)
       from (
@@ -103,6 +103,7 @@ begin
         from generate_series(date_trunc('day',v_desde at time zone 'America/Argentina/Buenos_Aires'),date_trunc('day',v_hasta at time zone 'America/Argentina/Buenos_Aires'),interval '1 day') as days(dia)
         left join public.comercios_analytics_events e
           on e.created_at >= greatest(v_desde, days.dia at time zone 'America/Argentina/Buenos_Aires') and e.created_at < least(v_hasta, (days.dia + interval '1 day') at time zone 'America/Argentina/Buenos_Aires')
+          and e.tipo_evento='page_view'
           and (v_campana is null or e.utm_campaign=v_campana)
         group by days.dia::date
       ) d
@@ -114,6 +115,7 @@ begin
           count(distinct visitor_id)::int as visitors
         from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta
+          and tipo_evento='page_view'
           and (v_campana is null or utm_campaign=v_campana)
         group by extract(hour from created_at at time zone 'America/Argentina/Buenos_Aires')::int
       ) h
@@ -123,6 +125,7 @@ begin
       select jsonb_agg(jsonb_build_object('path',p.page_path,'views',p.views) order by p.views desc)
       from (select page_path,count(*)::int views from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta
+          and tipo_evento='page_view'
           and (v_campana is null or utm_campaign=v_campana)
         group by page_path order by count(*) desc limit 10) p
     ),'[]'::jsonb),
@@ -131,6 +134,7 @@ begin
       from (select coalesce(nullif(localidad,''),'No identificada') nombre,count(*)::int visitas,
         count(distinct visitor_id)::int visitantes from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta
+          and tipo_evento='page_view'
           and (v_campana is null or utm_campaign=v_campana)
         group by 1 order by count(*) desc limit 20) p
     ),'[]'::jsonb),
@@ -142,7 +146,7 @@ begin
           and (v_campana is null or utm_campaign=v_campana)
         group by 1 order by count(*) desc limit 20) p
     ),'[]'::jsonb),
-    'dispositivos', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas,'visitantes',x.visitantes) order by x.visitas desc) from (select coalesce(nullif(dispositivo,''),'No identificado') nombre,count(*)::int visitas,count(distinct visitor_id)::int visitantes from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
+    'dispositivos', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas,'visitantes',x.visitantes) order by x.visitas desc) from (select coalesce(nullif(dispositivo,''),'No identificado') nombre,count(*)::int visitas,count(distinct visitor_id)::int visitantes from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and tipo_evento='page_view' and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
     'navegadores', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas) order by x.visitas desc) from (select coalesce(nullif(navegador,''),'No identificado') nombre,count(*)::int visitas from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
     'sistemas', coalesce((select jsonb_agg(jsonb_build_object('nombre',x.nombre,'visitas',x.visitas) order by x.visitas desc) from (select coalesce(nullif(sistema_operativo,''),'No identificado') nombre,count(*)::int visitas from public.comercios_analytics_events where created_at>=v_desde and created_at<v_hasta and (v_campana is null or utm_campaign=v_campana) group by 1) x),'[]'::jsonb),
     'campaigns', coalesce((
@@ -151,11 +155,13 @@ begin
         coalesce(nullif(utm_source,''),'Sin origen') origen,count(*)::int visitas,
         count(distinct visitor_id)::int visitantes from public.comercios_analytics_events
         where created_at >= v_desde and created_at < v_hasta
+          and tipo_evento='page_view'
         group by 1,2 order by count(*) desc limit 50) p
     ),'[]'::jsonb)
   ) into result
   from public.comercios_analytics_events
   where created_at >= v_desde and created_at < v_hasta
+    and tipo_evento='page_view'
     and (v_campana is null or utm_campaign=v_campana);
   return result;
 end;
