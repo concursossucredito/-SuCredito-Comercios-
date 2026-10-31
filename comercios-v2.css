@@ -188,3 +188,56 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--r);outline-offset:3
  html{scroll-behavior:auto}
  .merchant,.directoryBranch,.chip,.headerHomeCta,.headerBranchCta{transition:none}
 }
+
+/* Segunda pasada visual · tarjetas, cuotas y sucursales */
+#comercios{padding-top:8px}
+.heading{padding-bottom:12px;border-bottom:1px solid #ece8df}
+.heading h2{color:var(--ink)}
+.grid{align-items:stretch}
+.merchant{overflow:hidden;gap:14px;padding:18px;background:#fff;border:1px solid #e8e4da;border-radius:18px;box-shadow:0 7px 22px rgba(27,26,30,.055)}
+.merchant:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--y)}
+.merchantHead{grid-template-columns:minmax(112px,148px) minmax(0,1fr);gap:15px}
+.logo{height:116px;border:0;background:#faf9f5;border-radius:13px;padding:12px}
+.logo img{max-height:92px}
+.merchantInfo{align-self:center}
+.merchant h3{font-size:clamp(18px,1.65vw,23px);line-height:1.12}
+.offers{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.quotaOffer{min-height:108px;padding:10px 7px 8px;border:1px solid #eee9df;border-bottom:4px solid var(--y);border-radius:13px;box-shadow:none}
+.quotaNumber{min-width:60px;min-height:54px;font-size:37px;border-radius:12px;box-shadow:none}
+.quotaWords{font-size:10px;font-weight:900}
+.quotaNote{font-size:9px}
+.quotaLocalities{font-size:9px;color:#716c74}
+.locs{margin-top:auto;padding-top:11px}
+.branchDirectorySection{margin-top:10px;padding:42px 0 66px;background:linear-gradient(180deg,#fffdf7 0%,#f7f5ee 100%);border-top:1px solid #ebe6da}
+.branchDirectoryHead{display:flex;justify-content:space-between;gap:24px}
+.branchDirectoryHead>div{max-width:620px}
+.branchDirectoryHead h2{margin:4px 0 8px}
+.branchEyebrow{color:var(--r);font-weight:900}
+.branchDirectoryGrid{display:grid}
+.directoryBranch{overflow:hidden}
+.directoryBranchImage{width:100%;object-fit:cover}
+@media(max-width:850px){
+ #comercios{padding-top:2px}
+ .merchant{padding:10px;gap:10px;border-radius:15px}
+ .merchant:before{width:3px}
+ .merchantHead{grid-template-columns:1fr;gap:8px}
+ .logo{height:94px;padding:8px}
+ .logo img{max-height:78px}
+ .merchant h3{font-size:clamp(13px,2.5vw,16px);overflow-wrap:anywhere}
+ .offers{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .quotaOffer{width:100%;min-height:94px;padding:8px 4px 7px}
+ .quotaNumber{min-width:45px;min-height:43px;font-size:29px}
+ .quotaWords{font-size:9px}
+ .quotaNote,.quotaLocalities{font-size:8px}
+ .branchDirectorySection{padding:30px 0 44px}
+ .branchDirectoryHead{display:block}
+ .branchDirectoryHead .field{max-width:none;margin-top:12px}
+}
+@media(max-width:420px){
+ .merchant{padding:8px}
+ .logo{height:82px}
+ .logo img{max-height:68px}
+ .merchant h3{font-size:13px}
+ .quotaOffer{min-height:88px}
+ .quotaNumber{min-width:41px;min-height:39px;font-size:26px}
+}
