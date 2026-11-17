@@ -128,3 +128,5 @@ main{display:block;width:min(1160px,calc(100% - 32px));max-width:100%;min-width:
  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .analyticsSummary{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+.codeEditor{margin:12px 0;padding:12px;border:1px solid #e5e5e5;border-radius:12px;background:#fffdf6}.codeEditor textarea{width:100%;min-height:76px}.fileButton{display:inline-flex;align-items:center;padding:10px 14px;border:1px solid #ddd;border-radius:9px;cursor:pointer;font-weight:700;background:#fff}.fileButton:hover{border-color:#e30613}
