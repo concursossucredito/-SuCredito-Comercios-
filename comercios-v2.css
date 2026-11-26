@@ -285,3 +285,48 @@ a.merchant{color:inherit;text-decoration:none}a.merchant:hover{color:inherit;tex
  .chips .chip{display:flex;flex:0 0 auto;flex-direction:row;justify-content:flex-start;align-items:center;width:100%;min-height:42px;text-align:left}
  .chips .chipLabel{text-align:left}
 }
+
+
+/* Rubros en carrusel horizontal táctil: sin caja contenedora */
+@media(max-width:850px){
+ .chips{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  width:100%;
+  max-height:none!important;
+  margin:18px 0!important;
+  padding:2px 1px 10px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;
+  scrollbar-width:none;
+  touch-action:pan-x;
+ }
+ .chips::-webkit-scrollbar{display:none!important}
+ .chips .chip{
+  display:inline-flex!important;
+  flex:0 0 auto!important;
+  flex-direction:row!important;
+  justify-content:center!important;
+  align-items:center!important;
+  width:auto!important;
+  min-width:max-content;
+  min-height:42px!important;
+  padding:10px 14px!important;
+  white-space:nowrap!important;
+  scroll-snap-align:start;
+  border-radius:14px;
+  text-align:center!important;
+ }
+ .chips .chipLabel{white-space:nowrap!important;text-align:center!important}
+}
