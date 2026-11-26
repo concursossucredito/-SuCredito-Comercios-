@@ -248,3 +248,6 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--r);outline-offset:3
 .merchantCategoryItem{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .merchantCategoryItem .chipIconSvg{width:15px;height:15px;flex:0 0 15px;stroke:var(--r);stroke-width:2}
 .chipIconSvg{stroke:#1b1a1e}
+
+/* Logotipos de rubros subidos desde el administrador */
+.chipIconImage{width:22px;height:22px;display:block;flex:0 0 22px;object-fit:contain}.merchantCategoryItem .chipIconImage{width:17px;height:17px;flex-basis:17px}.merchantCategoryItem{min-width:0}
