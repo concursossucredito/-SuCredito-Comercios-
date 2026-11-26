@@ -262,71 +262,62 @@ a.merchant{color:inherit;text-decoration:none}a.merchant:hover{color:inherit;tex
 .merchantWebArrow{font-size:16px;line-height:1}
 .merchantWebLink:focus-visible{outline:3px solid #e30613;outline-offset:3px}
 
-/* Rubros en celular: lista compacta con desplazamiento vertical */
-@media(max-width:850px){
- .chips{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:6px;max-height:clamp(150px,32vh,224px);overflow-x:hidden;overflow-y:auto;padding:7px;margin:12px 0 20px;border:1px solid #e9e5dc;border-radius:14px;background:#fff;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#c9c4b8 #f5f3ed}
- .chips::-webkit-scrollbar{display:block;width:6px}
- .chips::-webkit-scrollbar-track{background:#f5f3ed;border-radius:8px}
- .chips::-webkit-scrollbar-thumb{background:#c9c4b8;border-radius:8px}
- .chip{display:flex;flex:0 0 auto;flex-direction:row;justify-content:flex-start;align-items:center;min-height:42px;width:100%;max-width:none;padding:8px 12px;border-radius:10px;text-align:left;font-size:12px}
- .chipIconSvg,.chipIconImage{width:20px;height:20px;flex:0 0 20px}
- .chipLabel{max-width:none;text-align:left}
-}
 
-
-/* Filtros de rubros: escritorio horizontal y móvil vertical con scroll */
-@media(min-width:851px){
- .chips{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;justify-content:flex-start;gap:10px;max-height:none;overflow:visible;padding:0;border:0;border-radius:0;background:transparent}
- .chips .chip{display:inline-flex;flex:0 0 auto;flex-direction:row;align-items:center;justify-content:center;width:auto;min-height:46px;max-width:100%;padding:11px 16px;text-align:center}
- .chips .chipLabel{text-align:center}
-}
-@media(max-width:850px){
- .chips{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;max-height:clamp(150px,32vh,224px);overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable}
- .chips .chip{display:flex;flex:0 0 auto;flex-direction:row;justify-content:flex-start;align-items:center;width:100%;min-height:42px;text-align:left}
- .chips .chipLabel{text-align:left}
-}
-
-
-/* Rubros en carrusel horizontal táctil: sin caja contenedora */
-@media(max-width:850px){
- .chips{
+/* Rubros: carrusel horizontal real en móvil y tablet */
+@media(max-width:1100px){
+ #comercios > #cats.chips{
   display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:nowrap!important;
+  flex-flow:row nowrap!important;
   align-items:center!important;
   justify-content:flex-start!important;
   gap:8px!important;
-  width:100%;
+  width:100%!important;
   max-height:none!important;
-  margin:18px 0!important;
-  padding:2px 1px 10px!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:16px 0 22px!important;
+  padding:2px 0 8px!important;
   overflow-x:auto!important;
   overflow-y:hidden!important;
   border:0!important;
   border-radius:0!important;
   background:transparent!important;
   box-shadow:none!important;
+  scrollbar-width:none!important;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior-x:contain;
-  scroll-snap-type:x proximity;
-  scrollbar-width:none;
   touch-action:pan-x;
  }
- .chips::-webkit-scrollbar{display:none!important}
- .chips .chip{
+ #comercios > #cats.chips::-webkit-scrollbar{display:none!important}
+ #comercios > #cats.chips > .chip{
   display:inline-flex!important;
   flex:0 0 auto!important;
   flex-direction:row!important;
-  justify-content:center!important;
   align-items:center!important;
+  justify-content:center!important;
   width:auto!important;
-  min-width:max-content;
-  min-height:42px!important;
-  padding:10px 14px!important;
+  min-width:max-content!important;
+  max-width:none!important;
+  min-height:44px!important;
+  margin:0!important;
+  padding:10px 15px!important;
+  border-radius:999px!important;
   white-space:nowrap!important;
-  scroll-snap-align:start;
-  border-radius:14px;
   text-align:center!important;
  }
- .chips .chipLabel{white-space:nowrap!important;text-align:center!important}
+ #comercios > #cats.chips > .chip .chipLabel{
+  max-width:none!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+ }
+}
+@media(min-width:1101px){
+ #comercios > #cats.chips{
+  display:flex;
+  flex-flow:row wrap;
+  max-height:none;
+  overflow:visible;
+  border:0;
+  background:transparent;
+ }
 }
