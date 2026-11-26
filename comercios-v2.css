@@ -272,3 +272,16 @@ a.merchant{color:inherit;text-decoration:none}a.merchant:hover{color:inherit;tex
  .chipIconSvg,.chipIconImage{width:20px;height:20px;flex:0 0 20px}
  .chipLabel{max-width:none;text-align:left}
 }
+
+
+/* Filtros de rubros: escritorio horizontal y móvil vertical con scroll */
+@media(min-width:851px){
+ .chips{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;justify-content:flex-start;gap:10px;max-height:none;overflow:visible;padding:0;border:0;border-radius:0;background:transparent}
+ .chips .chip{display:inline-flex;flex:0 0 auto;flex-direction:row;align-items:center;justify-content:center;width:auto;min-height:46px;max-width:100%;padding:11px 16px;text-align:center}
+ .chips .chipLabel{text-align:center}
+}
+@media(max-width:850px){
+ .chips{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;max-height:clamp(150px,32vh,224px);overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable}
+ .chips .chip{display:flex;flex:0 0 auto;flex-direction:row;justify-content:flex-start;align-items:center;width:100%;min-height:42px;text-align:left}
+ .chips .chipLabel{text-align:left}
+}
