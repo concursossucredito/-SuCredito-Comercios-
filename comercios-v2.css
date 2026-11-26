@@ -241,3 +241,10 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--r);outline-offset:3
  .quotaOffer{min-height:88px}
  .quotaNumber{min-width:41px;min-height:39px;font-size:26px}
 }
+
+
+/* Identidad visual de rubros en filtros y tarjetas */
+.merchantCategoryMeta{display:flex;flex-wrap:wrap;align-items:center;gap:7px;letter-spacing:.035em}
+.merchantCategoryItem{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.merchantCategoryItem .chipIconSvg{width:15px;height:15px;flex:0 0 15px;stroke:var(--r);stroke-width:2}
+.chipIconSvg{stroke:#1b1a1e}
